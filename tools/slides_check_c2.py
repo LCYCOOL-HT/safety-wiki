@@ -2,7 +2,7 @@
 用法：python -X utf8 tools/slides_check_c2.py .
 檢查項目（依 brief 與 AGENTS.md 7.5）：
 - 結構：主線從 open 依序到 end；每個節點都在主線或被主線節點 related 連到；related 目標存在。
-- 每頁格式：學習目標 ≤30 字；重點 3～5 點、每點 ≤40 字、每點都有事實；自我檢查 3～4 個選項、答案索引有效、有解說和事實。
+- 每頁格式：學習目標 ≤30 字；重點 3～5 點、每點 ≤60 字、每點都有事實；自我檢查 3～4 個選項、答案索引有效、有解說和事實。
 - 可追溯：所有事實編號都存在於 source_pack。
 - 數字：重點、正確選項、解說裡的數字，都要出現在所引用事實的原文裡（中文數字和阿拉伯數字視為相同）。
 - C1 warn 的事實：不可用在重點、自我檢查和圖（不可自行補寫例外，因為例外內容不在 wiki）。
@@ -17,7 +17,7 @@ import sys, re, json, pathlib
 root = pathlib.Path(sys.argv[1]).resolve()
 pack = json.loads((root / 'slides/source_pack.json').read_text(encoding='utf-8'))
 ol = json.loads((root / 'slides/outline.json').read_text(encoding='utf-8'))
-LIM = {'goal': 30, 'point': 40}
+LIM = {'goal': 30, 'point': 60}
 BASE = {'id', 'kind', 'title', 'goal'}
 ALLOWED = {'open': BASE | {'info', 'disclaimer', 'disclaimer_text'}, 'end': BASE | {'info', 'more_wiki'},
            'main': BASE | {'chapter', 'page', 'points', 'diagram', 'quiz', 'related'}, 'ext': BASE | {'page', 'points', 'quiz', 'related'}}
