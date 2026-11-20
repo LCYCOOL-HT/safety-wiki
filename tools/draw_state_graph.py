@@ -17,18 +17,14 @@ ROWS = [
     ('N2', 'node',  '大綱',           'outline.json ＋ outline.md'),
     ('C2', 'check', '檢查大綱',       'reports/C2.json'),
     ('G1', 'gate',  '人：確認大綱',   '回報被移除的頁面'),
-    ('N3', 'node',  '圖規格',         'diagram_spec.json'),
-    ('N4', 'node',  '繪圖',           'diagrams/*.svg'),
-    ('C3', 'check', '檢查圖',         'reports/C3.json'),
-    ('G2', 'gate',  '人：確認圖',     '看截圖'),
-    ('N5', 'node',  '組裝 HTML',      'slides/index.html'),
-    ('C4', 'check', '檢查投影片',     'reports/C4.json ＋ 截圖'),
-    ('G3', 'gate',  '人：試用',       '自己操作一次'),
-    ('N6', 'node',  '發佈紀錄',       'git commit ＋ log'),
+    ('N3', 'node',  '組裝 HTML',      'slides/index.html'),
+    ('C3', 'check', '檢查投影片',     'reports/C3.json ＋ 截圖'),
+    ('G2', 'gate',  '人：試用',       '自己操作一次'),
+    ('N4', 'node',  '發佈紀錄',       'git commit ＋ log'),
 ]
 # 退回：(從, 到, 側邊)  right = 自動檢查退回、left = 人工修改
-LOOPS = [('C1', 'N1', 'right'), ('C2', 'N2', 'right'), ('C3', 'N3', 'right'), ('C4', 'N5', 'right'),
-         ('G0', 'N0', 'left'), ('G1', 'N2', 'left'), ('G2', 'N3', 'left'), ('G3', 'N5', 'left')]
+LOOPS = [('C1', 'N1', 'right'), ('C2', 'N2', 'right'), ('C3', 'N3', 'right'),
+         ('G0', 'N0', 'left'), ('G1', 'N2', 'left'), ('G2', 'N3', 'left')]
 
 W, TOP, STEP, BH, BW, CX = 1240, 150, 86, 56, 330, 470
 COL = {'node': ('#E8F1FB', '#2B6CB0'), 'check': ('#FFF4E5', '#C05621'), 'gate': ('#EDF7ED', '#2F855A')}
@@ -46,7 +42,7 @@ s.append('''<defs>
 </defs>''')
 s.append(f'<rect width="{W}" height="{H}" fill="#FFFFFF"/>')
 s.append(f'<text x="{CX}" y="50" text-anchor="middle" font-size="28" font-weight="700" fill="#1A202C">製作教學簡報：狀態圖</text>')
-s.append(f'<text x="{CX}" y="84" text-anchor="middle" font-size="16" fill="#4A5568">資料來源只有 wiki ・ 大綱是唯一資料來源，圖和投影片都由它產生</text>')
+s.append(f'<text x="{CX}" y="84" text-anchor="middle" font-size="16" fill="#4A5568">資料來源只有 wiki ・ 投影片只由大綱產生</text>')
 
 # 主線箭頭
 for (a, *_), (b, *_) in zip(ROWS, ROWS[1:]):
@@ -86,8 +82,8 @@ def card(x, top, w, title, lines, stroke):
 NX, NW = 800, 410
 card(NX, y['N1'] - 30, NW, '資料不足的頁面', ['wiki 裡找不到足夠來源的投影片：', '自動從大綱移除、記入 removed_nodes，', '在下一個人工關卡（G1）一併報告。', '不可以用自己的知識補內容。'], '#9B2C2C')
 card(NX, y['N2'] + 52, NW, '剎車機制', ['每個自動檢查最多退回 3 次；', '第 3 次仍不通過 → 停下，交給人處理。', '人工修改不計入，修改後次數重新計算。'], '#C05621')
-card(NX, y['G1'] + 60, NW, '每頁投影片（新人自學）', ['學習目標、重點（附條號）、圖、', '一題單選自我檢查：點選後顯示對錯、', '解說和條號連結。題目和答案都要', '對得到 wiki；不記錄學員進度。'], '#2B6CB0')
-card(NX, y['C4'] - 40, NW, '檢查方式', ['程式：條號、連結、字數、頁數、截圖', '獨立審查：另一個 agent 只看產物，', '判斷內容是否忠於 wiki、是否看得懂'], '#4A5568')
+card(NX, y['G1'] - 10, NW, '每頁投影片（新人自學，不放圖）', ['位置、學習目標、重點（附條號）、', '一題單選自我檢查（點選後顯示對錯、', '解說和條號連結）、導覽。題目和答案', '都要對得到 wiki；不記錄學員進度。'], '#2B6CB0')
+card(NX, y['C3'] + 60, NW, '檢查方式', ['程式：條號、連結、字數、頁數、截圖', '獨立審查：另一個 agent 只看產物，', '判斷內容是否忠於 wiki、是否看得懂'], '#4A5568')
 
 # 圖例與 wiki 更新
 ly = H - 60

@@ -1,7 +1,8 @@
 {
  "check": "C2",
- "attempt": 2,
+ "attempt": 3,
  "history": [
+  "pass",
   "pass",
   "pass"
  ],
@@ -17,13 +18,5 @@
   "main": 15,
   "ext": 10
  },
- "review": {
-  "pass": true,
-  "errors": 0,
-  "warns": 5,
-  "warns_fixed": 5,
-  "file": "C2_review.json",
-  "note": "5 個 warn 依使用者指示補上，使用者表示不必再審"
- },
- "G1": "通過（使用者：補 warn，不用再審核）"
+ "review": null
 }

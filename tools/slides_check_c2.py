@@ -5,10 +5,9 @@
 - 每頁格式：學習目標 ≤30 字；重點 3～5 點、每點 ≤60 字、每點都有事實；自我檢查 3～4 個選項、答案索引有效、有解說和事實。
 - 可追溯：所有事實編號都存在於 source_pack。
 - 數字：重點、正確選項、解說裡的數字，都要出現在所引用事實的原文裡（中文數字和阿拉伯數字視為相同）。
-- C1 warn 的事實：不可用在重點、自我檢查和圖（不可自行補寫例外，因為例外內容不在 wiki）。
-- 主線每張圖都要列出依據事實（diagram.facts），圖構想裡的數字要在這些事實中。
+- C1 warn 的事實：不可用在重點和自我檢查（不可自行補寫例外，因為例外內容不在 wiki）。
 - 開場頁免責聲明要和 wiki 首頁原文相同。
-- 欄位白名單：每個節點只能有 brief 規定的欄位（brief 修訂後拿掉學姊，頁面上不可放 6 個區塊以外的文字）。
+- 欄位白名單：每個節點只能有 brief 規定的欄位（brief 修訂後拿掉學姊，頁面上不可放 5 個區塊以外的文字）。
 - 資料不足：主線或延伸節點的頁面若不在 source_pack，列入 removed_nodes（應由 N2 處理）。
 結果寫入 slides/reports/C2.json：history 記錄每次執行的結果；退回次數＝程式不通過次數＋獨立審查不通過次數。
 另外產生 slides/outline.md（給人審閱，也是獨立審查的輸入）。"""
@@ -20,7 +19,7 @@ ol = json.loads((root / 'slides/outline.json').read_text(encoding='utf-8'))
 LIM = {'goal': 30, 'point': 60}
 BASE = {'id', 'kind', 'title', 'goal'}
 ALLOWED = {'open': BASE | {'info', 'disclaimer', 'disclaimer_text'}, 'end': BASE | {'info', 'more_wiki'},
-           'main': BASE | {'chapter', 'page', 'points', 'diagram', 'quiz', 'related'}, 'ext': BASE | {'page', 'points', 'quiz', 'related'}}
+           'main': BASE | {'chapter', 'page', 'points', 'quiz', 'related'}, 'ext': BASE | {'page', 'points', 'quiz', 'related'}}
 CN = {'零': 0, '一': 1, '二': 2, '兩': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9}
 
 def cn2int(s):
@@ -71,7 +70,7 @@ if nodes.get('open', {}).get('disclaimer_text') != pack.get('disclaimer'):
 for nid, n in nodes.items():
     if len(n.get('goal', '')) > LIM['goal']: err(nid, f"學習目標超過 {LIM['goal']} 字（{len(n['goal'])}）")
     extra_keys = set(n) - ALLOWED[n['kind']]
-    if extra_keys: err(nid, f'有 brief 沒有規定的欄位（頁面上不可放 6 個區塊以外的文字）：{sorted(extra_keys)}')
+    if extra_keys: err(nid, f'有 brief 沒有規定的欄位（頁面上不可放 5 個區塊以外的文字）：{sorted(extra_keys)}')
     if n['kind'] in ('open', 'end'):
         continue
     if n['page'] not in pack['pages']:
@@ -90,15 +89,6 @@ for nid, n in nodes.items():
         flagged = [x for x in ids if 'review' in facts[x]]
         if flagged:
             err(nid, f'重點 {i} 用到 C1 warn 事實 {flagged}（規則：warn 事實不可使用；不可自行補寫例外）')
-    if n['kind'] == 'main':
-        dgm = n.get('diagram') or {}
-        ids = resolve(n, dgm.get('facts', []))
-        miss = [x for x in ids if x not in facts]
-        if not ids or miss: err(nid, f'圖沒有列出依據事實，或事實不存在：{miss}')
-        else:
-            if [x for x in ids if 'review' in facts[x]]: err(nid, '圖用到 C1 warn 事實')
-            extra = numbers(dgm.get('idea', '')) - numbers(''.join(facts[x]['text'] for x in ids))
-            if extra: err(nid, f'圖構想的數字 {sorted(extra)} 不在圖的依據事實中')
     q = n.get('quiz')
     if not q: err(nid, '沒有自我檢查'); continue
     if not 3 <= len(q['options']) <= 4: err(nid, '自我檢查選項要 3～4 個')
@@ -146,11 +136,6 @@ for nid in mp + [x for x in nodes if x not in mp]:
             f = facts.get(x)
             if f: L.append(f"  - 依據 `{x}`{' ⚠' if 'review' in f else ''}：{f['text']}（{'、'.join(c['law'] + ' §' + c['no'] for c in f['cites'])}）")
     if n.get('disclaimer_text'): L.append(f"- **免責聲明**：{n['disclaimer_text']}")
-    if n.get('diagram'):
-        L.append(f"- **圖**（{n['diagram']['type']}）：{n['diagram']['idea']}")
-        for x in resolve(n, n['diagram'].get('facts', [])):
-            f = facts.get(x)
-            if f: L.append(f"  - 圖的依據 `{x}`：{f['text']}")
     if n.get('quiz'):
         q = n['quiz']
         L.append(f"- **自我檢查**：{q['q']}")

@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1524" viewBox="0 0 1240 1524" font-family="Microsoft JhengHei, Noto Sans TC, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1180" viewBox="0 0 1240 1180" font-family="Microsoft JhengHei, Noto Sans TC, sans-serif">
 <defs>
 <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#4A5568"/></marker>
 <marker id="ao" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C05621"/></marker>
 <marker id="ag" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2F855A"/></marker>
 </defs>
-<rect width="1240" height="1524" fill="#FFFFFF"/>
+<rect width="1240" height="1180" fill="#FFFFFF"/>
 <text x="470" y="50" text-anchor="middle" font-size="28" font-weight="700" fill="#1A202C">製作教學簡報：狀態圖</text>
-<text x="470" y="84" text-anchor="middle" font-size="16" fill="#4A5568">資料來源只有 wiki ・ 大綱是唯一資料來源，圖和投影片都由它產生</text>
+<text x="470" y="84" text-anchor="middle" font-size="16" fill="#4A5568">資料來源只有 wiki ・ 投影片只由大綱產生</text>
 <line x1="470" y1="178.0" x2="470" y2="206.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
 <line x1="470" y1="264.0" x2="470" y2="292.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
 <text x="478" y="284.0" font-size="13" fill="#4A5568">通過</text>
@@ -20,31 +20,21 @@
 <text x="478" y="714.0" font-size="13" fill="#4A5568">通過</text>
 <line x1="470" y1="780.0" x2="470" y2="808.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
 <line x1="470" y1="866.0" x2="470" y2="894.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
+<text x="478" y="886.0" font-size="13" fill="#4A5568">通過</text>
 <line x1="470" y1="952.0" x2="470" y2="980.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
 <text x="478" y="972.0" font-size="13" fill="#4A5568">通過</text>
-<line x1="470" y1="1038.0" x2="470" y2="1066.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
-<text x="478" y="1058.0" font-size="13" fill="#4A5568">通過</text>
-<line x1="470" y1="1124.0" x2="470" y2="1152.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
-<line x1="470" y1="1210.0" x2="470" y2="1238.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
-<text x="478" y="1230.0" font-size="13" fill="#4A5568">通過</text>
-<line x1="470" y1="1296.0" x2="470" y2="1324.0" stroke="#4A5568" stroke-width="2" marker-end="url(#a)"/>
-<text x="478" y="1316.0" font-size="13" fill="#4A5568">通過</text>
 <path d="M635.0,408 H675.0 V322 H637.0" fill="none" stroke="#C05621" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ao)"/>
 <text x="681.0" y="370.0" font-size="13" fill="#C05621" text-anchor="start">不通過 ≤3 次</text>
 <path d="M635.0,580 H675.0 V494 H637.0" fill="none" stroke="#C05621" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ao)"/>
 <text x="681.0" y="542.0" font-size="13" fill="#C05621" text-anchor="start">不通過 ≤3 次</text>
-<path d="M635.0,924 H675.0 V752 H637.0" fill="none" stroke="#C05621" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ao)"/>
-<text x="681.0" y="843.0" font-size="13" fill="#C05621" text-anchor="start">不通過 ≤3 次</text>
-<path d="M635.0,1182 H675.0 V1096 H637.0" fill="none" stroke="#C05621" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ao)"/>
-<text x="681.0" y="1144.0" font-size="13" fill="#C05621" text-anchor="start">不通過 ≤3 次</text>
+<path d="M635.0,838 H675.0 V752 H637.0" fill="none" stroke="#C05621" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ao)"/>
+<text x="681.0" y="800.0" font-size="13" fill="#C05621" text-anchor="start">不通過 ≤3 次</text>
 <path d="M305.0,236 H265.0 V150 H303.0" fill="none" stroke="#2F855A" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ag)"/>
 <text x="259.0" y="198.0" font-size="13" fill="#2F855A" text-anchor="end">修改意見</text>
 <path d="M305.0,666 H265.0 V494 H303.0" fill="none" stroke="#2F855A" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ag)"/>
 <text x="259.0" y="585.0" font-size="13" fill="#2F855A" text-anchor="end">修改意見</text>
-<path d="M305.0,1010 H265.0 V752 H303.0" fill="none" stroke="#2F855A" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ag)"/>
-<text x="259.0" y="886.0" font-size="13" fill="#2F855A" text-anchor="end">修改意見</text>
-<path d="M305.0,1268 H265.0 V1096 H303.0" fill="none" stroke="#2F855A" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ag)"/>
-<text x="259.0" y="1187.0" font-size="13" fill="#2F855A" text-anchor="end">修改意見</text>
+<path d="M305.0,924 H265.0 V752 H303.0" fill="none" stroke="#2F855A" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ag)"/>
+<text x="259.0" y="843.0" font-size="13" fill="#2F855A" text-anchor="end">修改意見</text>
 <rect x="305.0" y="122.0" width="330" height="56" rx="6" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
 <text x="319.0" y="146" font-size="17" font-weight="700" fill="#2B6CB0">■ N0</text>
 <text x="379.0" y="146" font-size="17" font-weight="700" fill="#1A202C">需求規格</text>
@@ -75,36 +65,20 @@
 <text x="379.0" y="684" font-size="13" fill="#4A5568">回報被移除的頁面</text>
 <rect x="305.0" y="724.0" width="330" height="56" rx="6" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
 <text x="319.0" y="748" font-size="17" font-weight="700" fill="#2B6CB0">■ N3</text>
-<text x="379.0" y="748" font-size="17" font-weight="700" fill="#1A202C">圖規格</text>
-<text x="379.0" y="770" font-size="13" fill="#4A5568">diagram_spec.json</text>
-<rect x="305.0" y="810.0" width="330" height="56" rx="6" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
-<text x="319.0" y="834" font-size="17" font-weight="700" fill="#2B6CB0">■ N4</text>
-<text x="379.0" y="834" font-size="17" font-weight="700" fill="#1A202C">繪圖</text>
-<text x="379.0" y="856" font-size="13" fill="#4A5568">diagrams/*.svg</text>
-<rect x="305.0" y="896.0" width="330" height="56" rx="16" fill="#FFF4E5" stroke="#C05621" stroke-width="2"/>
-<text x="319.0" y="920" font-size="17" font-weight="700" fill="#C05621">○ C3</text>
-<text x="379.0" y="920" font-size="17" font-weight="700" fill="#1A202C">檢查圖</text>
-<text x="379.0" y="942" font-size="13" fill="#4A5568">reports/C3.json</text>
-<rect x="305.0" y="982.0" width="330" height="56" rx="28" fill="#EDF7ED" stroke="#2F855A" stroke-width="2"/>
-<text x="319.0" y="1006" font-size="17" font-weight="700" fill="#2F855A">◆ G2</text>
-<text x="379.0" y="1006" font-size="17" font-weight="700" fill="#1A202C">人：確認圖</text>
-<text x="379.0" y="1028" font-size="13" fill="#4A5568">看截圖</text>
-<rect x="305.0" y="1068.0" width="330" height="56" rx="6" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
-<text x="319.0" y="1092" font-size="17" font-weight="700" fill="#2B6CB0">■ N5</text>
-<text x="379.0" y="1092" font-size="17" font-weight="700" fill="#1A202C">組裝 HTML</text>
-<text x="379.0" y="1114" font-size="13" fill="#4A5568">slides/index.html</text>
-<rect x="305.0" y="1154.0" width="330" height="56" rx="16" fill="#FFF4E5" stroke="#C05621" stroke-width="2"/>
-<text x="319.0" y="1178" font-size="17" font-weight="700" fill="#C05621">○ C4</text>
-<text x="379.0" y="1178" font-size="17" font-weight="700" fill="#1A202C">檢查投影片</text>
-<text x="379.0" y="1200" font-size="13" fill="#4A5568">reports/C4.json ＋ 截圖</text>
-<rect x="305.0" y="1240.0" width="330" height="56" rx="28" fill="#EDF7ED" stroke="#2F855A" stroke-width="2"/>
-<text x="319.0" y="1264" font-size="17" font-weight="700" fill="#2F855A">◆ G3</text>
-<text x="379.0" y="1264" font-size="17" font-weight="700" fill="#1A202C">人：試用</text>
-<text x="379.0" y="1286" font-size="13" fill="#4A5568">自己操作一次</text>
-<rect x="305.0" y="1326.0" width="330" height="56" rx="6" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
-<text x="319.0" y="1350" font-size="17" font-weight="700" fill="#2B6CB0">■ N6</text>
-<text x="379.0" y="1350" font-size="17" font-weight="700" fill="#1A202C">發佈紀錄</text>
-<text x="379.0" y="1372" font-size="13" fill="#4A5568">git commit ＋ log</text>
+<text x="379.0" y="748" font-size="17" font-weight="700" fill="#1A202C">組裝 HTML</text>
+<text x="379.0" y="770" font-size="13" fill="#4A5568">slides/index.html</text>
+<rect x="305.0" y="810.0" width="330" height="56" rx="16" fill="#FFF4E5" stroke="#C05621" stroke-width="2"/>
+<text x="319.0" y="834" font-size="17" font-weight="700" fill="#C05621">○ C3</text>
+<text x="379.0" y="834" font-size="17" font-weight="700" fill="#1A202C">檢查投影片</text>
+<text x="379.0" y="856" font-size="13" fill="#4A5568">reports/C3.json ＋ 截圖</text>
+<rect x="305.0" y="896.0" width="330" height="56" rx="28" fill="#EDF7ED" stroke="#2F855A" stroke-width="2"/>
+<text x="319.0" y="920" font-size="17" font-weight="700" fill="#2F855A">◆ G2</text>
+<text x="379.0" y="920" font-size="17" font-weight="700" fill="#1A202C">人：試用</text>
+<text x="379.0" y="942" font-size="13" fill="#4A5568">自己操作一次</text>
+<rect x="305.0" y="982.0" width="330" height="56" rx="6" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
+<text x="319.0" y="1006" font-size="17" font-weight="700" fill="#2B6CB0">■ N4</text>
+<text x="379.0" y="1006" font-size="17" font-weight="700" fill="#1A202C">發佈紀錄</text>
+<text x="379.0" y="1028" font-size="13" fill="#4A5568">git commit ＋ log</text>
 <rect x="800" y="292" width="410" height="122" rx="8" fill="#FFFFFF" stroke="#9B2C2C" stroke-width="1.5"/>
 <text x="814" y="316" font-size="15" font-weight="700" fill="#9B2C2C">資料不足的頁面</text>
 <text x="814" y="340" font-size="13" fill="#2D3748">wiki 裡找不到足夠來源的投影片：</text>
@@ -116,22 +90,22 @@
 <text x="814" y="594" font-size="13" fill="#2D3748">每個自動檢查最多退回 3 次；</text>
 <text x="814" y="616" font-size="13" fill="#2D3748">第 3 次仍不通過 → 停下，交給人處理。</text>
 <text x="814" y="638" font-size="13" fill="#2D3748">人工修改不計入，修改後次數重新計算。</text>
-<rect x="800" y="726" width="410" height="122" rx="8" fill="#FFFFFF" stroke="#2B6CB0" stroke-width="1.5"/>
-<text x="814" y="750" font-size="15" font-weight="700" fill="#2B6CB0">每頁投影片（新人自學）</text>
-<text x="814" y="774" font-size="13" fill="#2D3748">學習目標、重點（附條號）、圖、</text>
-<text x="814" y="796" font-size="13" fill="#2D3748">一題單選自我檢查：點選後顯示對錯、</text>
-<text x="814" y="818" font-size="13" fill="#2D3748">解說和條號連結。題目和答案都要</text>
-<text x="814" y="840" font-size="13" fill="#2D3748">對得到 wiki；不記錄學員進度。</text>
-<rect x="800" y="1142" width="410" height="100" rx="8" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.5"/>
-<text x="814" y="1166" font-size="15" font-weight="700" fill="#4A5568">檢查方式</text>
-<text x="814" y="1190" font-size="13" fill="#2D3748">程式：條號、連結、字數、頁數、截圖</text>
-<text x="814" y="1212" font-size="13" fill="#2D3748">獨立審查：另一個 agent 只看產物，</text>
-<text x="814" y="1234" font-size="13" fill="#2D3748">判斷內容是否忠於 wiki、是否看得懂</text>
-<rect x="40" y="1464" width="26" height="18" rx="4" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
-<text x="74" y="1478" font-size="14" fill="#2D3748">節點（產生產物）</text>
-<rect x="250" y="1464" width="26" height="18" rx="4" fill="#FFF4E5" stroke="#C05621" stroke-width="2"/>
-<text x="284" y="1478" font-size="14" fill="#2D3748">自動檢查</text>
-<rect x="460" y="1464" width="26" height="18" rx="4" fill="#EDF7ED" stroke="#2F855A" stroke-width="2"/>
-<text x="494" y="1478" font-size="14" fill="#2D3748">人工確認關卡</text>
-<text x="40" y="1508" font-size="13" fill="#4A5568">wiki 更新時：比對 source_pack 記錄的來源頁雜湊，有變動就從 N1 重跑，下游產物標為過期。</text>
+<rect x="800" y="656" width="410" height="122" rx="8" fill="#FFFFFF" stroke="#2B6CB0" stroke-width="1.5"/>
+<text x="814" y="680" font-size="15" font-weight="700" fill="#2B6CB0">每頁投影片（新人自學，不放圖）</text>
+<text x="814" y="704" font-size="13" fill="#2D3748">位置、學習目標、重點（附條號）、</text>
+<text x="814" y="726" font-size="13" fill="#2D3748">一題單選自我檢查（點選後顯示對錯、</text>
+<text x="814" y="748" font-size="13" fill="#2D3748">解說和條號連結）、導覽。題目和答案</text>
+<text x="814" y="770" font-size="13" fill="#2D3748">都要對得到 wiki；不記錄學員進度。</text>
+<rect x="800" y="898" width="410" height="100" rx="8" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.5"/>
+<text x="814" y="922" font-size="15" font-weight="700" fill="#4A5568">檢查方式</text>
+<text x="814" y="946" font-size="13" fill="#2D3748">程式：條號、連結、字數、頁數、截圖</text>
+<text x="814" y="968" font-size="13" fill="#2D3748">獨立審查：另一個 agent 只看產物，</text>
+<text x="814" y="990" font-size="13" fill="#2D3748">判斷內容是否忠於 wiki、是否看得懂</text>
+<rect x="40" y="1120" width="26" height="18" rx="4" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
+<text x="74" y="1134" font-size="14" fill="#2D3748">節點（產生產物）</text>
+<rect x="250" y="1120" width="26" height="18" rx="4" fill="#FFF4E5" stroke="#C05621" stroke-width="2"/>
+<text x="284" y="1134" font-size="14" fill="#2D3748">自動檢查</text>
+<rect x="460" y="1120" width="26" height="18" rx="4" fill="#EDF7ED" stroke="#2F855A" stroke-width="2"/>
+<text x="494" y="1134" font-size="14" fill="#2D3748">人工確認關卡</text>
+<text x="40" y="1164" font-size="13" fill="#4A5568">wiki 更新時：比對 source_pack 記錄的來源頁雜湊，有變動就從 N1 重跑，下游產物標為過期。</text>
 </svg>
