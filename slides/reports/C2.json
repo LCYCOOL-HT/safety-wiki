@@ -16,5 +16,10 @@
   "main": 15,
   "ext": 10
  },
- "review": null
+ "review": {
+  "pass": true,
+  "errors": 0,
+  "warns": 5,
+  "file": "C2_review.json"
+ }
 }
