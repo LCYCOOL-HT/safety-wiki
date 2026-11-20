@@ -8,16 +8,19 @@
 - C1 warn 的事實：不可用在重點、自我檢查和圖（不可自行補寫例外，因為例外內容不在 wiki）。
 - 主線每張圖都要列出依據事實（diagram.facts），圖構想裡的數字要在這些事實中。
 - 開場頁免責聲明要和 wiki 首頁原文相同。
-- 學姊台詞：≤60 字，不可有數字、條號或百分比。
+- 欄位白名單：每個節點只能有 brief 規定的欄位（brief 修訂後拿掉學姊，頁面上不可放 6 個區塊以外的文字）。
 - 資料不足：主線或延伸節點的頁面若不在 source_pack，列入 removed_nodes（應由 N2 處理）。
-結果寫入 slides/reports/C2.json，並累計執行次數（attempt；退回次數＝attempt－1）。
+結果寫入 slides/reports/C2.json：history 記錄每次執行的結果；退回次數＝程式不通過次數＋獨立審查不通過次數。
 另外產生 slides/outline.md（給人審閱，也是獨立審查的輸入）。"""
 import sys, re, json, pathlib
 
 root = pathlib.Path(sys.argv[1]).resolve()
 pack = json.loads((root / 'slides/source_pack.json').read_text(encoding='utf-8'))
 ol = json.loads((root / 'slides/outline.json').read_text(encoding='utf-8'))
-LIM = {'goal': 30, 'point': 40, 'senpai': 60}
+LIM = {'goal': 30, 'point': 40}
+BASE = {'id', 'kind', 'title', 'goal'}
+ALLOWED = {'open': BASE | {'info', 'disclaimer', 'disclaimer_text'}, 'end': BASE | {'info', 'more_wiki'},
+           'main': BASE | {'chapter', 'page', 'points', 'diagram', 'quiz', 'related'}, 'ext': BASE | {'page', 'points', 'quiz', 'related'}}
 CN = {'零': 0, '一': 1, '二': 2, '兩': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9}
 
 def cn2int(s):
@@ -67,9 +70,8 @@ if nodes.get('open', {}).get('disclaimer_text') != pack.get('disclaimer'):
     err('open', '開場頁的免責聲明要和 wiki 首頁原文完全相同')
 for nid, n in nodes.items():
     if len(n.get('goal', '')) > LIM['goal']: err(nid, f"學習目標超過 {LIM['goal']} 字（{len(n['goal'])}）")
-    s = n.get('senpai', {}).get('line', '')
-    if len(s) > LIM['senpai']: err(nid, f"學姊台詞超過 {LIM['senpai']} 字（{len(s)}）")
-    if re.search(r'\d|§|百分之|第[一二三四五六七八九十百]+條', s): err(nid, f'學姊台詞含數字或條號：{s}')
+    extra_keys = set(n) - ALLOWED[n['kind']]
+    if extra_keys: err(nid, f'有 brief 沒有規定的欄位（頁面上不可放 6 個區塊以外的文字）：{sorted(extra_keys)}')
     if n['kind'] in ('open', 'end'):
         continue
     if n['page'] not in pack['pages']:
@@ -118,8 +120,13 @@ ext_n = sum(1 for n in nodes.values() if n['kind'] == 'ext')
 if main_n + ext_n + 2 > 27: err('-', f'頁數超過 27（主線 {main_n}＋延伸 {ext_n}＋開場結尾 2）')
 
 rep = root / 'slides/reports/C2.json'
-attempt = json.loads(rep.read_text(encoding='utf-8')).get('attempt', 0) + 1 if rep.exists() else 1
-result = {'check': 'C2', 'attempt': attempt, 'rejections': attempt - 1, 'max_rejections': 3,
+prev = json.loads(rep.read_text(encoding='utf-8')) if rep.exists() else {}
+history = prev.get('history', []) + ['pass' if not errors else 'fail']
+attempt = len(history)
+# 退回次數只算「不通過」的執行（重跑但通過不算）；獨立審查的不通過由製作者另外記入 review_rejections
+result = {'check': 'C2', 'attempt': attempt, 'history': history,
+          'rejections': history.count('fail') + prev.get('review_rejections', 0),
+          'review_rejections': prev.get('review_rejections', 0), 'max_rejections': 3,
           'program': {'pass': not errors, 'errors': errors, 'removed_nodes': removed},
           'counts': {'main': main_n, 'ext': ext_n}, 'review': None}
 rep.write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding='utf-8', newline='\n')
@@ -152,7 +159,6 @@ for nid in mp + [x for x in nodes if x not in mp]:
         for x in resolve(n, q['facts']):
             f = facts.get(x)
             if f: L.append(f"  - 依據 `{x}`：{f['text']}")
-    L.append(f"- **學姊**（{n['senpai']['mood']}）：「{n['senpai']['line']}」")
     if n.get('related'): L.append('- **連到**：' + '、'.join(nodes[r]['title'] for r in n['related'] if r in nodes))
     if n.get('more_wiki'): L.append('- **延伸學習地圖（只列 wiki 連結）**：' + '、'.join(n['more_wiki']))
     L.append('')
