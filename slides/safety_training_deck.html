@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>化工廠新人工安入門</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        screens: { sm: '1px', md: '2px', lg: '3px', xl: '4px', '2xl': '5px' },
+        extend: {
+          fontFamily: { sans: ['Inter', 'Noto Sans TC', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+          colors: { lcy: { navy: '#040B16', deep: '#081426', blue: '#0066CC', cyan: '#00E5FF', emerald: '#10B981', amber: '#F59E0B', purple: '#8B5CF6', red: '#FF4D6A' } }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #040B16; color: #F8FAFC; }
+    .tech-card {
+      background: linear-gradient(145deg, rgba(15,29,51,.65) 0%, rgba(7,15,29,.85) 100%);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(0,229,255,.16);
+      box-shadow: 0 10px 35px -10px rgba(0,0,0,.7), inset 0 1px 0 0 rgba(255,255,255,.08);
+      transition: all .4s cubic-bezier(.16,1,.3,1);
+    }
+    .tech-card:hover { border-color: rgba(0,229,255,.45); transform: translateY(-4px); box-shadow: 0 20px 45px -10px rgba(0,229,255,.15), inset 0 1px 0 0 rgba(255,255,255,.15); }
+    .text-glow-cyan { text-shadow: 0 0 25px rgba(0,229,255,.45); }
+    .text-glow-red { text-shadow: 0 0 25px rgba(255,77,106,.5); }
+    .text-glow-amber { text-shadow: 0 0 25px rgba(245,158,11,.5); }
+    .text-glow-emerald { text-shadow: 0 0 25px rgba(16,185,129,.45); }
+
+    .reveal-item { opacity: 0; transform: translateY(28px) scale(.98); transition: opacity .75s cubic-bezier(.16,1,.3,1), transform .75s cubic-bezier(.16,1,.3,1); }
+    .slide-active .reveal-item { opacity: 1; transform: none; }
+    .delay-100 { transition-delay: 100ms; } .delay-200 { transition-delay: 200ms; } .delay-300 { transition-delay: 300ms; }
+    .delay-400 { transition-delay: 400ms; } .delay-500 { transition-delay: 500ms; } .delay-600 { transition-delay: 600ms; }
+
+    .wafer-bg {
+      background-image: radial-gradient(circle at 50% 50%, rgba(0,229,255,.06) 0%, transparent 70%),
+        linear-gradient(to right, rgba(0,229,255,.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,229,255,.04) 1px, transparent 1px);
+      background-size: 100% 100%, 48px 48px, 48px 48px;
+    }
+    .flow-dash { stroke-dasharray: 8 8; animation: dashFlow 20s linear infinite; }
+    @keyframes dashFlow { to { stroke-dashoffset: -400; } }
+
+    html, body { height: 100%; overflow: hidden; }
+    #slides-container { position: fixed; inset: 0; z-index: 10; }
+    .slide-frame { position: absolute; inset: 0; overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(15px) scale(.99);
+      transition: opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1), visibility .55s; }
+    .slide-frame.slide-active { opacity: 1; visibility: visible; transform: none; z-index: 10; }
+    .slide-section { width: 1600px; height: 900px; position: absolute; left: 50%; top: calc(50% + var(--off, 0px) / 2);
+      transform: translate(-50%, -50%) scale(var(--s, 1)); transform-origin: center center; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between; padding: 5.75rem 5rem 2rem 5rem; }
+    #deck-controls button:disabled { opacity: .3; cursor: default; }
+    #deck-controls { transition: opacity .4s ease, transform .4s ease; }
+    body.ui-idle #deck-controls { opacity: 0; transform: translateY(8px); pointer-events: none; }
+    body.ui-idle { cursor: none; }
+    @media (max-width: 700px), (max-height: 520px) { #deck-controls { transform-origin: bottom right; scale: .8; right: 8px !important; bottom: 8px !important; } }
+    @media (max-width: 900px) { #chapter-rail { display: none !important; } header .brand-sub { display: none; } }
+
+    .cover-bg {
+      background: radial-gradient(ellipse 60% 55% at 82% 28%, rgba(0,140,255,.38) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 50% at 12% 82%, rgba(255,77,106,.26) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 45% at 52% 55%, rgba(16,185,129,.18) 0%, transparent 65%),
+        linear-gradient(135deg, #03060F 0%, #0A1332 52%, #040817 100%);
+    }
+    .streak-pulse { stroke-dasharray: 140 1800; animation: streakRun 7s cubic-bezier(.45,.05,.35,1) infinite; }
+    .streak-pulse.p2 { animation-duration: 9s; animation-delay: -3s; }
+    .streak-pulse.p3 { animation-duration: 11s; animation-delay: -6s; }
+    @keyframes streakRun { from { stroke-dashoffset: 1940; } to { stroke-dashoffset: 0; } }
+    .streak-breathe { animation: breathe 6s ease-in-out infinite; }
+    @keyframes breathe { 0%,100% { opacity: .55; } 50% { opacity: .95; } }
+    .cover-grid { background-image: linear-gradient(to right, rgba(148,197,255,.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,197,255,.07) 1px, transparent 1px);
+      background-size: 56px 56px; -webkit-mask-image: radial-gradient(ellipse 70% 60% at 70% 40%, #000 0%, transparent 75%); mask-image: radial-gradient(ellipse 70% 60% at 70% 40%, #000 0%, transparent 75%); }
+
+    /* law citation chip -> opens raw .md */
+    .cite { display: inline-flex; align-items: center; gap: .35rem; font-family: 'JetBrains Mono', 'Noto Sans TC', monospace; font-size: 13px; font-weight: 600;
+      color: #7DD3FC; background: rgba(0,229,255,.08); border: 1px solid rgba(0,229,255,.28); border-radius: 9999px; padding: 2px 10px; white-space: nowrap;
+      text-decoration: none; transition: all .2s ease; vertical-align: middle; }
+    .cite::before { content: "\f24e"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 10px; opacity: .8; }
+    .cite:hover { color: #040B16; background: #00E5FF; border-color: #00E5FF; box-shadow: 0 0 18px rgba(0,229,255,.5); }
+
+    /* teaching scaffold */
+    .ch-chip { font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: .12em; }
+    .goal { border-left: 3px solid #00E5FF; }
+    .takeaway { background: linear-gradient(90deg, rgba(245,158,11,.16), rgba(245,158,11,.03) 70%, transparent); border: 1px solid rgba(245,158,11,.35); }
+    .step-num { font-family: 'JetBrains Mono', monospace; }
+    .rail-seg { transition: all .35s ease; }
+    .rail-seg.on { background: rgba(0,229,255,.14); border-color: rgba(0,229,255,.55); color: #fff; }
+    .rail-seg.on .rail-dot { background: #00E5FF; box-shadow: 0 0 10px #00E5FF; }
+    .rail-seg.done { color: #94A3B8; }
+    .rail-seg.done .rail-dot { background: #10B981; }
+    .agenda-card { cursor: pointer; }
+    .gauge-fill { width: 0; transition: width 1.6s cubic-bezier(.16,1,.3,1) .4s; }
+    .slide-active .gauge-fill { width: var(--w); }
+  </style>
+</head>
+<body class="wafer-bg selection:bg-lcy-cyan selection:text-lcy-navy">
+  <canvas id="bg-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+  <header class="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 py-3.5 flex items-center justify-between bg-[#040B16]/80 backdrop-blur-md border-b border-white/10">
+    <a href="#" id="logo-home" class="flex items-center gap-3 focus:outline-none">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-lcy-cyan/30 to-lcy-emerald/20 border border-lcy-cyan/40 flex items-center justify-center text-lcy-cyan"><i class="fa-solid fa-helmet-safety"></i></div>
+      <div class="flex flex-col leading-tight">
+        <span class="text-xs font-semibold tracking-widest text-lcy-cyan uppercase">Process Safety Onboarding</span>
+        <span class="brand-sub text-[11px] text-slate-400 tracking-wide">化工廠新人工安入門</span>
+      </div>
+    </a>
+    <nav id="chapter-rail" class="flex items-center gap-2 text-[12px] text-slate-500"></nav>
+    <div class="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-lcy-blue via-lcy-cyan to-lcy-emerald transition-all duration-300" id="top-progress-bar" style="width:6.6%"></div>
+  </header>
+
+  <main id="slides-container" class="relative z-10">
+
+    <!-- ===== 1 COVER ===== -->
+    <section data-title="封面" data-ch="0" class="slide-section justify-center cover-bg overflow-hidden">
+      <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 cover-grid"></div>
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="cv-s1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF4D6A" stop-opacity=".9"/><stop offset="50%" stop-color="#F59E0B" stop-opacity=".7"/><stop offset="100%" stop-color="#00D2FF" stop-opacity=".95"/></linearGradient>
+            <linearGradient id="cv-s2" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity=".7"/><stop offset="50%" stop-color="#3B82F6" stop-opacity=".85"/><stop offset="100%" stop-color="#38BDF8" stop-opacity=".95"/></linearGradient>
+            <filter id="cv-blur-l"><feGaussianBlur stdDeviation="7"/></filter>
+            <filter id="cv-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g class="streak-breathe">
+            <path d="M-100,170 Q470,470 1540,230" fill="none" stroke="url(#cv-s1)" stroke-width="22" filter="url(#cv-blur-l)"/>
+            <path d="M180,980 Q430,430 1540,275" fill="none" stroke="url(#cv-s2)" stroke-width="28" filter="url(#cv-blur-l)"/>
+          </g>
+          <path d="M-100,215 Q490,495 1540,248" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity=".6"/>
+          <path d="M260,980 Q470,450 1540,288" fill="none" stroke="#38BDF8" stroke-width="3.5" opacity=".8"/>
+          <path d="M-60,640 Q580,500 1540,268" fill="none" stroke="#5EEAD4" stroke-width="1.5" opacity=".7"/>
+          <g filter="url(#cv-glow)" fill="none" stroke-linecap="round">
+            <path class="streak-pulse" d="M-100,215 Q490,495 1540,248" stroke="#FFFFFF" stroke-width="4" pathLength="1940"/>
+            <path class="streak-pulse p2" d="M260,980 Q470,450 1540,288" stroke="#7DD3FC" stroke-width="5" pathLength="1940"/>
+            <path class="streak-pulse p3" d="M-60,640 Q580,500 1540,268" stroke="#FCD34D" stroke-width="3" pathLength="1940"/>
+          </g>
+          <circle cx="1290" cy="262" r="70" fill="#38BDF8" opacity=".12" filter="url(#cv-blur-l)"/>
+          <circle cx="1290" cy="262" r="4" fill="#FFFFFF" filter="url(#cv-glow)"/>
+        </svg>
+        <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#03060F]/80 to-transparent"></div>
+      </div>
+      <div class="relative z-10 max-w-7xl mx-auto w-full my-auto">
+        <div class="max-w-5xl space-y-8">
+          <div class="reveal-item inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/15 text-sky-200 text-sm font-medium tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-lcy-red animate-ping"></span>新進人員安全衛生教育訓練
+          </div>
+          <h1 class="reveal-item delay-100 text-7xl font-black tracking-tight leading-[1.15] text-white drop-shadow-[0_4px_30px_rgba(0,0,0,.5)]">
+            化工廠新人<br><span class="bg-gradient-to-r from-white via-sky-200 to-cyan-300 bg-clip-text text-transparent">工安入門</span>
+          </h1>
+          <div class="reveal-item delay-200 flex items-center gap-4">
+            <div class="h-1 w-20 rounded-full bg-gradient-to-r from-lcy-red via-lcy-amber to-lcy-cyan"></div>
+            <p class="text-2xl font-semibold text-slate-100 tracking-wide">從報到第一天，到出事的那一刻：12 個一定要懂的法規重點</p>
+          </div>
+          <div class="reveal-item delay-300 flex flex-wrap gap-3 pt-4">
+            <a class="cite" target="_blank" href="../raw/職業安全衛生法.md">職業安全衛生法</a>
+            <a class="cite" target="_blank" href="../raw/職業安全衛生設施規則.md">職業安全衛生設施規則</a>
+            <a class="cite" target="_blank" href="../raw/危害性化學品標示及通識規則.md">危害性化學品標示及通識規則</a>
+            <a class="cite" target="_blank" href="../raw/缺氧症預防規則.md">缺氧症預防規則</a>
+          </div>
+        </div>
+      </div>
+      <div class="relative z-10 max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3">
+        <span>依全國法規資料庫條文整理 · 僅供教學參考，實際以最新條文及公司 SOP 為準</span><span class="font-mono text-slate-400 pg"></span>
+      </div>
+    </section>
+
+    <!-- ===== 2 AGENDA / STORYLINE ===== -->
+    <section data-title="學習地圖" data-ch="0" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-8">
+        <div class="reveal-item flex items-end justify-between">
+          <div>
+            <span class="ch-chip text-lcy-cyan">ROADMAP · 學習地圖</span>
+            <h2 class="text-5xl font-extrabold text-white mt-3">一條主線，四個章節</h2>
+            <p class="text-xl text-slate-300 mt-4">跟著一位新人的工作日常走：<span class="text-white font-semibold">先保護自己 → 看懂化學品 → 進設備作業 → 出事時怎麼辦</span></p>
+          </div>
+        </div>
+        <div class="relative grid grid-cols-4 gap-5">
+          <svg class="absolute left-0 right-0 top-[52px] w-full h-4 pointer-events-none" viewBox="0 0 1000 10" preserveAspectRatio="none"><line x1="40" y1="5" x2="960" y2="5" stroke="#00E5FF" stroke-opacity=".45" stroke-width="2" class="flow-dash"/></svg>
+          <div class="agenda-card tech-card rounded-2xl p-6 reveal-item delay-100" data-go="3">
+            <div class="flex items-center gap-3"><div class="w-14 h-14 rounded-2xl bg-lcy-emerald/15 border border-lcy-emerald/40 flex items-center justify-center text-lcy-emerald text-2xl relative z-10 bg-[#071a1a]"><i class="fa-solid fa-user-shield"></i></div><span class="step-num text-4xl font-black text-white/15">01</span></div>
+            <h3 class="text-2xl font-bold text-white mt-5">先保護自己</h3>
+            <p class="text-sm text-slate-400 mt-1">權利與義務</p>
+            <ul class="mt-4 space-y-2 text-[15px] text-slate-300"><li>· 報到：雇主做什麼、你做什麼</li><li>· 危險時，你可以先退避</li></ul>
+            <div class="mt-5 text-xs font-mono text-lcy-emerald">P.3 – P.4 →</div>
+          </div>
+          <div class="agenda-card tech-card rounded-2xl p-6 reveal-item delay-200" data-go="5">
+            <div class="flex items-center gap-3"><div class="w-14 h-14 rounded-2xl bg-lcy-amber/15 border border-lcy-amber/40 flex items-center justify-center text-lcy-amber text-2xl relative z-10 bg-[#1a1407]"><i class="fa-solid fa-flask"></i></div><span class="step-num text-4xl font-black text-white/15">02</span></div>
+            <h3 class="text-2xl font-bold text-white mt-5">看懂化學品</h3>
+            <p class="text-sm text-slate-400 mt-1">標示 → 資料 → 防爆</p>
+            <ul class="mt-4 space-y-2 text-[15px] text-slate-300"><li>· 容器標示怎麼看</li><li>· 安全資料表去哪查</li><li>· 防火防爆的 30% 門檻</li></ul>
+            <div class="mt-5 text-xs font-mono text-lcy-amber">P.5 – P.7 →</div>
+          </div>
+          <div class="agenda-card tech-card rounded-2xl p-6 reveal-item delay-300" data-go="8">
+            <div class="flex items-center gap-3"><div class="w-14 h-14 rounded-2xl bg-lcy-cyan/15 border border-lcy-cyan/40 flex items-center justify-center text-lcy-cyan text-2xl relative z-10 bg-[#07181f]"><i class="fa-solid fa-industry"></i></div><span class="step-num text-4xl font-black text-white/15">03</span></div>
+            <h3 class="text-2xl font-bold text-white mt-5">進設備作業</h3>
+            <p class="text-sm text-slate-400 mt-1">進槽 → 檢修 → 動火</p>
+            <ul class="mt-4 space-y-2 text-[15px] text-slate-300"><li>· 局限空間進入流程</li><li>· 缺氧的關鍵數字</li><li>· 上鎖掛牌、動火</li></ul>
+            <div class="mt-5 text-xs font-mono text-lcy-cyan">P.8 – P.11 →</div>
+          </div>
+          <div class="agenda-card tech-card rounded-2xl p-6 reveal-item delay-400" data-go="12">
+            <div class="flex items-center gap-3"><div class="w-14 h-14 rounded-2xl bg-lcy-red/15 border border-lcy-red/40 flex items-center justify-center text-lcy-red text-2xl relative z-10 bg-[#1f0a10]"><i class="fa-solid fa-truck-medical"></i></div><span class="step-num text-4xl font-black text-white/15">04</span></div>
+            <h3 class="text-2xl font-bold text-white mt-5">高處與應變</h3>
+            <p class="text-sm text-slate-400 mt-1">預防墜落 → 救援 → 通報</p>
+            <ul class="mt-4 space-y-2 text-[15px] text-slate-300"><li>· 2 公尺以上防墜</li><li>· 缺氧救援別衝進去</li><li>· 職災 8 小時通報</li></ul>
+            <div class="mt-5 text-xs font-mono text-lcy-red">P.12 – P.14 →</div>
+          </div>
+        </div>
+        <div class="reveal-item delay-500 tech-card rounded-2xl px-6 py-4 flex items-center gap-8 text-[15px] text-slate-300">
+          <span class="text-white font-bold"><i class="fa-solid fa-book-open text-lcy-cyan mr-2"></i>每頁怎麼讀</span>
+          <span><span class="text-lcy-cyan font-semibold">① 學習目標</span>　這頁要學會什麼</span>
+          <span><span class="text-lcy-amber font-semibold">② 記住這句</span>　帶走一句話</span>
+          <span><span class="cite pointer-events-none">條號</span>　點了會開啟法規原文</span>
+        </div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 3 報到 ===== -->
+    <section data-title="報到：雙方各做什麼" data-ch="1" data-next="知道自己的義務後，也要知道你的權利：遇到危險怎麼辦？" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-6">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-emerald">CH 01 · 先保護自己　1 / 2</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">報到第一天：雇主做什麼？你做什麼？</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　分清楚安全衛生是「雙向責任」，哪些是你的義務</p>
+        </div>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="tech-card rounded-2xl p-7 reveal-item delay-100">
+            <div class="flex items-center gap-3 mb-5"><div class="w-11 h-11 rounded-xl bg-blue-500/15 border border-blue-400/40 flex items-center justify-center text-blue-300"><i class="fa-solid fa-building"></i></div><h3 class="text-2xl font-bold text-white">雇主要做</h3></div>
+            <div class="space-y-4">
+              <div class="flex gap-4 items-start"><i class="fa-solid fa-stethoscope text-blue-300 mt-1.5"></i><div><p class="text-lg text-white font-semibold">僱用時施行體格檢查 <span class="cite" data-c="法|20"></span></p><p class="text-slate-400">檢查費用由雇主負擔</p></div></div>
+              <div class="flex gap-4 items-start"><i class="fa-solid fa-chalkboard-user text-blue-300 mt-1.5"></i><div><p class="text-lg text-white font-semibold">提供必要的安全衛生教育訓練 <span class="cite" data-c="法|32"></span></p><p class="text-slate-400">從事工作及預防災變所必要的訓練</p></div></div>
+            </div>
+          </div>
+          <div class="tech-card rounded-2xl p-7 reveal-item delay-200 !border-lcy-emerald/40">
+            <div class="flex items-center gap-3 mb-5"><div class="w-11 h-11 rounded-xl bg-lcy-emerald/15 border border-lcy-emerald/40 flex items-center justify-center text-lcy-emerald"><i class="fa-solid fa-user-check"></i></div><h3 class="text-2xl font-bold text-white">你的義務</h3></div>
+            <div class="space-y-4">
+              <div class="flex gap-4 items-start"><i class="fa-solid fa-heart-pulse text-lcy-emerald mt-1.5"></i><p class="text-lg text-white">接受體格檢查與健康檢查 <span class="cite" data-c="法|20"></span></p></div>
+              <div class="flex gap-4 items-start"><i class="fa-solid fa-graduation-cap text-lcy-emerald mt-1.5"></i><p class="text-lg text-white">接受安全衛生教育訓練 <span class="cite" data-c="法|32"></span></p></div>
+              <div class="flex gap-4 items-start"><i class="fa-solid fa-book text-lcy-emerald mt-1.5"></i><p class="text-lg text-white">切實遵行安全衛生工作守則 <span class="cite" data-c="法|34"></span></p></div>
+              <div class="flex gap-4 items-start"><i class="fa-solid fa-screwdriver-wrench text-lcy-emerald mt-1.5"></i><div><p class="text-lg text-white">不得任意拆卸安全設備 <span class="cite" data-c="設|327"></span></p><p class="text-slate-400">發現被拆卸或失效，要立即報告雇主或主管</p></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-400 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">體檢費用是雇主出的；但「接受訓練、遵守守則」是你的法定義務。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 4 退避權 ===== -->
+    <section data-title="危險時可以先退避" data-ch="1" data-next="保護好自己之後，接著認識每天會碰到的東西：化學品。" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-7">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-emerald">CH 01 · 先保護自己　2 / 2</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">感覺不對？<span class="text-lcy-emerald text-glow-emerald">你可以先停、先走</span></h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　知道「停止作業退避權」的三個步驟與保障 <span class="cite" data-c="法|18"></span></p>
+        </div>
+        <div class="grid grid-cols-12 gap-6 items-stretch">
+          <div class="col-span-8 tech-card rounded-2xl p-7 reveal-item delay-100">
+            <p class="text-sm font-mono text-slate-400 mb-5">前提：發現有立即發生危險之虞，且<span class="text-white">不危及其他工作者安全</span></p>
+            <div class="grid grid-cols-3 gap-4 items-center">
+              <div class="text-center p-5 rounded-2xl bg-lcy-red/10 border border-lcy-red/40"><i class="fa-solid fa-hand text-4xl text-lcy-red"></i><div class="step-num text-xs text-slate-400 mt-3">STEP 1</div><div class="text-2xl font-bold text-white mt-1">停止作業</div></div>
+              <div class="text-center p-5 rounded-2xl bg-lcy-amber/10 border border-lcy-amber/40 relative"><i class="fa-solid fa-person-running text-4xl text-lcy-amber"></i><div class="step-num text-xs text-slate-400 mt-3">STEP 2</div><div class="text-2xl font-bold text-white mt-1">退避到安全場所</div><i class="fa-solid fa-chevron-right absolute -left-4 top-1/2 -translate-y-1/2 text-slate-500"></i></div>
+              <div class="text-center p-5 rounded-2xl bg-lcy-cyan/10 border border-lcy-cyan/40 relative"><i class="fa-solid fa-phone-volume text-4xl text-lcy-cyan"></i><div class="step-num text-xs text-slate-400 mt-3">STEP 3</div><div class="text-2xl font-bold text-white mt-1">立即報告直屬主管</div><i class="fa-solid fa-chevron-right absolute -left-4 top-1/2 -translate-y-1/2 text-slate-500"></i></div>
+            </div>
+            <p class="mt-6 text-slate-300 text-[15px]"><i class="fa-solid fa-circle-info text-lcy-cyan mr-2"></i>不用先等主管同意。雇主或工作場所負責人發現時，也要<span class="text-white">立即下令停止作業</span>，讓勞工退避。</p>
+          </div>
+          <div class="col-span-4 tech-card rounded-2xl p-7 reveal-item delay-200 !border-lcy-emerald/40 flex flex-col">
+            <i class="fa-solid fa-shield-halved text-5xl text-lcy-emerald text-glow-emerald"></i>
+            <h3 class="text-2xl font-bold text-white mt-4">法律保障你</h3>
+            <p class="text-lg text-slate-200 mt-3 leading-relaxed">雇主<span class="text-lcy-emerald font-bold">不得</span>因此對你解僱、調職、不給付停止作業期間的工資，或做其他不利處分。</p>
+            <p class="text-sm text-slate-500 mt-auto pt-4">例外：雇主證明勞工濫用，經報主管機關認定，並符合勞動法令規定。</p>
+          </div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-400 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">停 → 退 → 報。先保命，再報告。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 5 標示 ===== -->
+    <section data-title="看懂容器標示" data-ch="2" data-next="標示只是摘要，完整的危害與處置資訊要去哪裡查？" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-6">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-amber">CH 02 · 看懂化學品　1 / 3</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">拿起容器，先讀懂它的標示</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　認得危害圖式與標示內容，並知道「免標示」的界線</p>
+        </div>
+        <div class="grid grid-cols-12 gap-6">
+          <div class="col-span-7 tech-card rounded-2xl p-7 reveal-item delay-100 flex gap-8 items-center">
+            <svg viewBox="0 0 200 200" class="w-[230px] h-[230px] shrink-0 drop-shadow-[0_0_30px_rgba(255,77,106,.35)]" aria-label="危害圖式示意">
+              <rect x="40" y="40" width="120" height="120" transform="rotate(45 100 100)" fill="#fff" stroke="#E11D48" stroke-width="12"/>
+              <path d="M100 58 C114 82 128 92 124 116 C121 134 108 142 100 142 C88 142 76 133 76 116 C76 104 84 96 90 90 C90 102 94 108 100 110 C98 96 92 80 100 58Z" fill="#111"/>
+              <rect x="70" y="146" width="60" height="6" fill="#111"/>
+            </svg>
+            <div class="space-y-3">
+              <div class="text-sm font-mono text-slate-400">① 危害圖式 <span class="cite" data-c="通|7"></span></div>
+              <p class="text-lg text-white">直立 45° 菱形：<span class="text-lcy-red font-bold">紅框</span>、白底、黑色符號</p>
+              <div class="text-sm font-mono text-slate-400 pt-2">② 內容 <span class="cite" data-c="通|5"></span></div>
+              <div class="grid grid-cols-2 gap-2 text-[15px]">
+                <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">名稱</span>
+                <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">危害成分</span>
+                <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">警示語</span>
+                <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">危害警告訊息</span>
+                <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">危害防範措施</span>
+                <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">製造/供應者資訊</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-5 flex flex-col gap-5">
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-200">
+              <div class="flex items-center gap-3"><i class="fa-solid fa-oil-well text-lcy-cyan text-xl"></i><h3 class="text-xl font-bold text-white">什麼要標示？</h3></div>
+              <p class="text-slate-300 mt-2 text-[15px]">裝有危害性化學品的容器都要標示，<span class="text-white">反應器、儲槽、管路也算容器</span>。容積 ≤ 100 mL 可只標名稱、圖式、警示語。<span class="cite" data-c="通|5"></span></p>
+            </div>
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-300 !border-lcy-amber/45">
+              <div class="flex items-center gap-3"><i class="fa-solid fa-circle-question text-lcy-amber text-xl"></i><h3 class="text-xl font-bold text-white">想一想</h3></div>
+              <p class="text-slate-300 mt-2 text-[15px]">從有標示的大桶分裝溶劑到小瓶，<span class="text-white">明天交給同事用</span>，小瓶要標示嗎？</p>
+              <p class="mt-3 text-[15px]"><span class="text-lcy-amber font-bold">要。</span><span class="text-slate-300">可攜帶容器免標示，只限「取自有標示容器、裝入的勞工當班立即使用」。</span><span class="cite" data-c="通|8"></span></p>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-400 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">紅框菱形 = 有危害；分裝後要留到下一班或給別人，就要貼標示。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 6 SDS ===== -->
+    <section data-title="查閱安全資料表" data-ch="2" data-next="知道化學品的危害後，最常見也最致命的是哪一種？火災與爆炸。" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-7">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-amber">CH 02 · 看懂化學品　2 / 3</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">安全資料表（SDS）：化學品的完整說明書</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　用三個問題記住 SDS：誰提供？放哪裡？多久檢討？</p>
+        </div>
+        <div class="grid grid-cols-3 gap-6">
+          <div class="tech-card rounded-2xl p-7 reveal-item delay-100">
+            <div class="step-num text-sm text-lcy-cyan">Q1 · 誰提供？</div>
+            <i class="fa-solid fa-truck-ramp-box text-5xl text-lcy-cyan mt-5"></i>
+            <p class="text-xl text-white font-bold mt-5">供應端提供 → 雇主給勞工</p>
+            <p class="text-slate-300 mt-3 leading-relaxed">製造者、輸入者或供應者提供化學品前要附 SDS <span class="cite" data-c="通|13"></span>；每一種含危害性化學品的化學品，雇主都要提供勞工 SDS，<span class="text-white">文字以中文為主</span> <span class="cite" data-c="通|12"></span></p>
+          </div>
+          <div class="tech-card rounded-2xl p-7 reveal-item delay-200">
+            <div class="step-num text-sm text-lcy-emerald">Q2 · 放哪裡？</div>
+            <i class="fa-solid fa-location-dot text-5xl text-lcy-emerald mt-5"></i>
+            <p class="text-xl text-white font-bold mt-5">工作場所「容易取得」的地方</p>
+            <p class="text-slate-300 mt-3 leading-relaxed">不是鎖在主管抽屜或總公司檔案室。雇主也要訂危害通識計畫，讓你接受教育訓練。<span class="cite" data-c="通|17"></span></p>
+          </div>
+          <div class="tech-card rounded-2xl p-7 reveal-item delay-300 !border-lcy-amber/45">
+            <div class="step-num text-sm text-lcy-amber">Q3 · 多久檢討？</div>
+            <div class="flex items-baseline gap-2 mt-4"><span class="text-7xl font-black text-lcy-amber text-glow-amber counter-val" data-target="3">3</span><span class="text-2xl font-bold text-white">年</span></div>
+            <p class="text-xl text-white font-bold mt-3">至少每三年檢討一次</p>
+            <p class="text-slate-300 mt-3 leading-relaxed">依實際狀況檢討內容正確性，更新紀錄保存三年。<span class="cite" data-c="通|15"></span></p>
+          </div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-400 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">標示告訴你「有危險」，SDS 告訴你「怎麼處理」——上工前先知道它放在哪。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 7 防火防爆 ===== -->
+    <section data-title="防火防爆 30% 門檻" data-ch="2" data-next="化學品認識完了。下一章要走進儲槽、反應槽：第一關是「局限空間」。" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-6">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-amber">CH 02 · 看懂化學品　3 / 3</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">防火防爆：記住 <span class="text-lcy-red text-glow-red">30%</span> 這條紅線</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　知道濃度到多少要撤，以及撤離時的三個動作 <span class="cite" data-c="設|177"></span></p>
+        </div>
+        <div class="tech-card rounded-2xl p-8 reveal-item delay-100">
+          <div class="flex justify-between text-sm font-mono text-slate-400 mb-3"><span>蒸氣 / 可燃性氣體濃度（以爆炸下限 LEL 為 100%）</span><span>作業前由指定專人測定</span></div>
+          <div class="relative h-14 rounded-full bg-slate-800/80 border border-white/10 overflow-visible">
+            <div class="gauge-fill absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-lcy-emerald via-lcy-amber to-lcy-red" style="--w:100%"></div>
+            <div class="absolute top-[-14px] bottom-[-14px] left-[30%] w-1 bg-white rounded shadow-[0_0_16px_#fff]"></div>
+            <div class="absolute -top-11 left-[30%] -translate-x-1/2 px-3 py-1 rounded-lg bg-lcy-red text-white font-bold text-lg whitespace-nowrap">30% LEL　立即撤離</div>
+          </div>
+          <div class="flex justify-between text-sm font-mono text-slate-500 mt-3"><span>0%</span><span class="ml-[22%]">30%</span><span class="ml-auto">100% LEL（爆炸下限）</span></div>
+          <div class="grid grid-cols-3 gap-5 mt-7">
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-lcy-red/10 border border-lcy-red/35"><i class="fa-solid fa-person-running text-3xl text-lcy-red"></i><div><div class="text-xl font-bold text-white">勞工退避</div><div class="text-slate-400 text-sm">即刻退到安全場所</div></div></div>
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-lcy-amber/10 border border-lcy-amber/35"><i class="fa-solid fa-fire-flame-curved text-3xl text-lcy-amber"></i><div><div class="text-xl font-bold text-white">停止點火源</div><div class="text-slate-400 text-sm">煙火及可能點火的機具</div></div></div>
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-lcy-cyan/10 border border-lcy-cyan/35"><i class="fa-solid fa-fan text-3xl text-lcy-cyan"></i><div><div class="text-xl font-bold text-white">加強通風</div><div class="text-slate-400 text-sm">降低濃度</div></div></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="tech-card rounded-2xl px-6 py-4 reveal-item delay-200 flex items-center gap-4"><i class="fa-solid fa-ban-smoking text-2xl text-lcy-red"></i><p class="text-slate-200">易燃易爆場所：標示「嚴禁煙火」，勞工不得使用明火 <span class="cite" data-c="設|171"></span></p></div>
+          <div class="tech-card rounded-2xl px-6 py-4 reveal-item delay-300 flex items-center gap-4"><i class="fa-solid fa-bolt text-2xl text-lcy-amber"></i><p class="text-slate-200">灌注、卸收有靜電爆炸之虞：接地、除電劑、加濕或除電裝置 <span class="cite" data-c="設|175"></span></p></div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-400 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">還沒到爆炸下限就要跑：30% LEL → 退避、停火、通風。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 8 局限空間 ===== -->
+    <section data-title="局限空間進入流程" data-ch="3" data-next="局限空間最常見的殺手是缺氧。那要記住哪些數字？" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-7">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-cyan">CH 03 · 進設備作業　1 / 4</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">進入局限空間：五個關卡，一關都不能跳</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　按順序說出進入儲槽、反應槽等局限空間前後要做的事</p>
+        </div>
+        <div class="relative">
+          <svg class="absolute left-0 right-0 top-[44px] w-full h-4 pointer-events-none" viewBox="0 0 1000 10" preserveAspectRatio="none"><line x1="60" y1="5" x2="940" y2="5" stroke="#00E5FF" stroke-opacity=".5" stroke-width="2" class="flow-dash"/></svg>
+          <div class="grid grid-cols-5 gap-4 relative">
+            <div class="reveal-item delay-100 text-center"><div class="mx-auto w-[88px] h-[88px] rounded-full bg-[#081426] border-2 border-lcy-cyan/60 flex items-center justify-center text-3xl text-lcy-cyan shadow-[0_0_25px_rgba(0,229,255,.25)]"><i class="fa-solid fa-magnifying-glass-chart"></i></div><div class="step-num text-xs text-slate-500 mt-4">01</div><div class="text-xl font-bold text-white mt-1">評估危害</div><p class="text-sm text-slate-400 mt-2 px-1">缺氧、中毒、感電、火災爆炸…有危害之虞要訂危害防止計畫</p><div class="mt-2"><span class="cite" data-c="設|29-1"></span></div></div>
+            <div class="reveal-item delay-200 text-center"><div class="mx-auto w-[88px] h-[88px] rounded-full bg-[#081426] border-2 border-lcy-amber/70 flex items-center justify-center text-3xl text-lcy-amber shadow-[0_0_25px_rgba(245,158,11,.3)]"><i class="fa-solid fa-file-signature"></i></div><div class="step-num text-xs text-slate-500 mt-4">02</div><div class="text-xl font-bold text-white mt-1">簽署進入許可</div><p class="text-sm text-slate-400 mt-2 px-1">由<span class="text-white">雇主、場所負責人或現場作業主管</span>簽署後才能進</p><div class="mt-2"><span class="cite" data-c="設|29-6"></span></div></div>
+            <div class="reveal-item delay-300 text-center"><div class="mx-auto w-[88px] h-[88px] rounded-full bg-[#081426] border-2 border-lcy-cyan/60 flex items-center justify-center text-3xl text-lcy-cyan shadow-[0_0_25px_rgba(0,229,255,.25)]"><i class="fa-solid fa-gauge-high"></i></div><div class="step-num text-xs text-slate-500 mt-4">03</div><div class="text-xl font-bold text-white mt-1">測定濃度</div><p class="text-sm text-slate-400 mt-2 px-1">作業前確認氧氣及危害物質，作業中<span class="text-white">連續</span>確認</p><div class="mt-2"><span class="cite" data-c="設|29-4"></span></div></div>
+            <div class="reveal-item delay-400 text-center"><div class="mx-auto w-[88px] h-[88px] rounded-full bg-[#081426] border-2 border-lcy-cyan/60 flex items-center justify-center text-3xl text-lcy-cyan shadow-[0_0_25px_rgba(0,229,255,.25)]"><i class="fa-solid fa-fan"></i></div><div class="step-num text-xs text-slate-500 mt-4">04</div><div class="text-xl font-bold text-white mt-1">持續通風</div><p class="text-sm text-slate-400 mt-2 px-1">通風換氣設備要連續有效運轉</p><div class="mt-2"><span class="cite" data-c="設|29-5"></span></div></div>
+            <div class="reveal-item delay-500 text-center"><div class="mx-auto w-[88px] h-[88px] rounded-full bg-[#081426] border-2 border-lcy-emerald/60 flex items-center justify-center text-3xl text-lcy-emerald shadow-[0_0_25px_rgba(16,185,129,.25)]"><i class="fa-solid fa-clipboard-user"></i></div><div class="step-num text-xs text-slate-500 mt-4">05</div><div class="text-xl font-bold text-white mt-1">進出點名</div><p class="text-sm text-slate-400 mt-2 px-1">進出都要確認、點名登記，紀錄保存三年</p><div class="mt-2"><span class="cite" data-c="設|29-6"></span></div></div>
+          </div>
+        </div>
+        <div class="tech-card rounded-2xl px-6 py-4 reveal-item delay-500 flex items-center gap-4 !border-lcy-amber/40"><i class="fa-solid fa-circle-question text-lcy-amber text-xl"></i><span class="text-slate-200 text-lg">想一想：要進去的勞工可以自己簽進入許可嗎？　<span class="text-lcy-amber font-bold">不行</span>，要由雇主、工作場所負責人或現場作業主管簽署。</span></div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-500 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">沒評估、沒許可、沒測定，就不進去。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 9 缺氧數字 ===== -->
+    <section data-title="缺氧的關鍵數字" data-ch="3" data-next="空氣顧好了，還要確保設備不會突然啟動、管線不會突然送料。" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-6">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-cyan">CH 03 · 進設備作業　2 / 4</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">缺氧作業：四個數字，記住就能救命</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　記住缺氧作業的關鍵數字與現場角色</p>
+        </div>
+        <div class="grid grid-cols-4 gap-5">
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-100 !border-lcy-cyan/45">
+            <div class="text-sm font-mono text-slate-400">氧氣濃度</div>
+            <div class="flex items-baseline mt-3"><span class="text-7xl font-black text-lcy-cyan text-glow-cyan counter-val" data-target="18">18</span><span class="text-3xl font-bold text-lcy-cyan">%</span></div>
+            <p class="text-slate-200 mt-3">換氣要保持在 18% 以上；未滿 18% 就是缺氧</p>
+            <div class="mt-3 flex gap-2 flex-wrap"><span class="cite" data-c="缺|3"></span><span class="cite" data-c="缺|5"></span></div>
+          </div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-200 !border-lcy-red/45">
+            <div class="text-sm font-mono text-slate-400">純氧換氣</div>
+            <div class="flex items-baseline mt-3"><span class="text-7xl font-black text-lcy-red text-glow-red">0</span><span class="text-2xl font-bold text-lcy-red ml-2">次</span></div>
+            <p class="text-slate-200 mt-3">換氣時<span class="text-white font-bold">不得使用純氧</span>，沒有例外</p>
+            <div class="mt-3"><span class="cite" data-c="缺|5"></span></div>
+          </div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-300 !border-lcy-amber/45">
+            <div class="text-sm font-mono text-slate-400">輸氣管面罩</div>
+            <div class="flex items-baseline mt-3"><span class="text-7xl font-black text-lcy-amber text-glow-amber counter-val" data-target="1">1</span><span class="text-2xl font-bold text-lcy-amber ml-2">小時</span></div>
+            <p class="text-slate-200 mt-3">每次連續作業不得超過一小時</p>
+            <div class="mt-3"><span class="cite" data-c="缺|30"></span></div>
+          </div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-400 !border-lcy-emerald/45">
+            <div class="text-sm font-mono text-slate-400">測定紀錄</div>
+            <div class="flex items-baseline mt-3"><span class="text-7xl font-black text-lcy-emerald text-glow-emerald counter-val" data-target="3">3</span><span class="text-2xl font-bold text-lcy-emerald ml-2">年</span></div>
+            <p class="text-slate-200 mt-3">開工前測氧氣、硫化氫等濃度，紀錄保存三年</p>
+            <div class="mt-3"><span class="cite" data-c="缺|16"></span></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="tech-card rounded-2xl px-6 py-5 reveal-item delay-300 flex items-center gap-5"><div class="w-12 h-12 rounded-xl bg-lcy-cyan/15 border border-lcy-cyan/40 flex items-center justify-center text-lcy-cyan text-xl"><i class="fa-solid fa-user-tie"></i></div><div><div class="text-lg font-bold text-white">缺氧作業主管 <span class="cite" data-c="缺|20"></span></div><p class="text-slate-400">當班作業前檢查換氣裝置、測定儀器、呼吸防護具、安全帶</p></div></div>
+          <div class="tech-card rounded-2xl px-6 py-5 reveal-item delay-400 flex items-center gap-5"><div class="w-12 h-12 rounded-xl bg-lcy-emerald/15 border border-lcy-emerald/40 flex items-center justify-center text-lcy-emerald text-xl"><i class="fa-solid fa-eye"></i></div><div><div class="text-lg font-bold text-white">監視人員 ≥ 1 名 <span class="cite" data-c="缺|21"></span></div><p class="text-slate-400">在外面盯著，發現異常立刻聯繫主管</p></div></div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-500 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">18% 以上、不用純氧、面罩 1 小時、紀錄 3 年。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 10 LOTO ===== -->
+    <section data-title="檢修：停機與上鎖掛牌" data-ch="3" data-next="能量都隔離了，檢修常常還要焊接、切割——也就是動火。" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-6">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-cyan">CH 03 · 進設備作業　3 / 4</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">設備檢修：先把所有能量「鎖」起來</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　依序說出停機、上鎖掛牌、釋壓與隔離的做法</p>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-100"><div class="flex items-center justify-between"><i class="fa-solid fa-power-off text-3xl text-lcy-cyan"></i><span class="step-num text-3xl font-black text-white/15">01</span></div><div class="text-xl font-bold text-white mt-4">停機、停料</div><p class="text-slate-400 mt-2 text-[15px]">停止相關機械運轉及送料</p><div class="mt-3"><span class="cite" data-c="設|57"></span></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-200 !border-lcy-amber/45"><div class="flex items-center justify-between"><i class="fa-solid fa-lock text-3xl text-lcy-amber"></i><span class="step-num text-3xl font-black text-white/15">02</span></div><div class="text-xl font-bold text-white mt-4">上鎖 + 掛牌</div><p class="text-slate-400 mt-2 text-[15px]">上鎖並設標示，防止誤啟動、誤送料</p><div class="mt-3"><span class="cite" data-c="設|57"></span></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-300"><div class="flex items-center justify-between"><i class="fa-solid fa-gauge-simple text-3xl text-lcy-cyan"></i><span class="step-num text-3xl font-black text-white/15">03</span></div><div class="text-xl font-bold text-white mt-4">釋放殘壓</div><p class="text-slate-400 mt-2 text-[15px]">彈簧、液壓、氣壓、真空：釋壓、關斷或阻隔</p><div class="mt-3"><span class="cite" data-c="設|57"></span></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-400"><div class="flex items-center justify-between"><i class="fa-solid fa-plug-circle-xmark text-3xl text-lcy-cyan"></i><span class="step-num text-3xl font-black text-white/15">04</span></div><div class="text-xl font-bold text-white mt-4">停電確認</div><p class="text-slate-400 mt-2 text-[15px]">開關上鎖或標示「禁止送電」，殘留電荷放電，檢電確認後短路接地</p><div class="mt-3"><span class="cite" data-c="設|254"></span></div></div>
+        </div>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-300 !border-lcy-cyan/40">
+            <div class="flex items-center gap-3"><i class="fa-solid fa-flask-vial text-xl text-lcy-cyan"></i><h3 class="text-xl font-bold text-white">化學設備的管線隔離</h3><span class="cite" data-c="設|198"></span></div>
+            <p class="text-slate-300 mt-3">閥或旋塞<span class="text-white">雙重關閉或設置盲板</span>；加鎖、鉛封或拆離把手，並設「不准開啟」標示或派人監視。</p>
+          </div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-400 !border-lcy-cyan/40">
+            <div class="flex items-center gap-3"><i class="fa-solid fa-wind text-xl text-lcy-cyan"></i><h3 class="text-xl font-bold text-white">接著氮氣等惰性氣體配管？</h3><span class="cite" data-c="缺|10"></span></div>
+            <p class="text-slate-300 mt-3">關閉閥、旋塞或加裝盲板，<span class="text-white">上鎖並公布</span>；標示配管內的氣體名稱與開關方向。</p>
+          </div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-500 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">停機不等於安全：上鎖、掛牌、釋壓、隔離，四件事做完才動手。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 11 動火 ===== -->
+    <section data-title="動火作業" data-ch="3" data-next="設備內部的作業講完了。最後一章：往上爬的高處作業，以及出事的那一刻。" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-7">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-cyan">CH 03 · 進設備作業　4 / 4</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">動火作業：三條規則，一條絕對禁止</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　知道焊接、切割等動火前要確認什麼、絕對不能做什麼</p>
+        </div>
+        <div class="grid grid-cols-12 gap-6">
+          <div class="col-span-5 tech-card rounded-2xl p-8 reveal-item delay-100 !border-lcy-red/55 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-lcy-red/15 blur-2xl"></div>
+            <span class="px-3 py-1 rounded-full bg-lcy-red/20 text-lcy-red text-sm font-bold">絕對禁止</span>
+            <div class="flex items-center gap-6 mt-6">
+              <div class="relative w-28 h-28 rounded-full border-4 border-lcy-red flex items-center justify-center shrink-0"><span class="text-4xl font-black text-white">O<sub class="text-xl">2</sub></span><div class="absolute w-[130%] h-1.5 bg-lcy-red rotate-45 rounded"></div></div>
+              <div><p class="text-3xl font-black text-white leading-snug">不得用氧氣<br>通風或換氣</p><div class="mt-3"><span class="cite" data-c="設|174"></span></div></div>
+            </div>
+            <p class="text-slate-300 mt-6 leading-relaxed">焊接時覺得空氣不好，打開氧氣瓶「換氣」？氧氣會讓火燒得更猛，絕對不行。</p>
+          </div>
+          <div class="col-span-7 flex flex-col gap-5">
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-200 flex gap-5 items-start"><div class="w-12 h-12 shrink-0 rounded-xl bg-lcy-amber/15 border border-lcy-amber/40 flex items-center justify-center text-lcy-amber text-xl"><i class="fa-solid fa-broom"></i></div><div><div class="text-xl font-bold text-white">先清除，再動火 <span class="cite" data-c="設|173"></span></div><p class="text-slate-300 mt-2">配管、儲槽、油桶內可能有危險物、油類、可燃性粉塵時，要事先清除，確認沒有危險，才能熔接、熔斷或使用明火。</p></div></div>
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-300 flex gap-5 items-start"><div class="w-12 h-12 shrink-0 rounded-xl bg-lcy-cyan/15 border border-lcy-cyan/40 flex items-center justify-center text-lcy-cyan text-xl"><i class="fa-solid fa-file-signature"></i></div><div><div class="text-xl font-bold text-white">局限空間內動火要「動火許可」 <span class="cite" data-c="設|29-6"></span></div><p class="text-slate-300 mt-2">指定專人確認沒有危害之虞，由雇主、工作場所負責人或現場作業主管簽署動火許可後，才能作業。</p></div></div>
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-400 flex gap-5 items-start"><div class="w-12 h-12 shrink-0 rounded-xl bg-white/5 border border-white/15 flex items-center justify-center text-slate-300 text-xl"><i class="fa-solid fa-link"></i></div><div><div class="text-xl font-bold text-white">串起前面學的</div><p class="text-slate-300 mt-2">動火前，P.7 的 30% LEL 測定、P.10 的管線隔離都要先做到。</p></div></div>
+          </div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-500 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">清除 → 確認 → 許可 → 動火；氧氣瓶永遠不是通風設備。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 12 高處 ===== -->
+    <section data-title="高處作業 2 公尺" data-ch="4" data-next="預防都做了，萬一還是有人在槽內倒下，該怎麼救？" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-6">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-red">CH 04 · 高處與應變　1 / 3</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">高處作業：<span class="text-lcy-cyan text-glow-cyan">2 公尺</span>是防墜的起點</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　知道防墜設施的優先順序，以及合梯的禁忌</p>
+        </div>
+        <div class="grid grid-cols-12 gap-6">
+          <div class="col-span-4 tech-card rounded-2xl p-6 reveal-item delay-100 flex flex-col items-center justify-center">
+            <svg viewBox="0 0 220 240" class="w-full h-[270px]" aria-label="2 公尺高度示意">
+              <rect x="20" y="60" width="120" height="10" fill="#334155"/>
+              <rect x="20" y="70" width="120" height="160" fill="url(#bldg)" opacity=".6"/>
+              <defs><linearGradient id="bldg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E7490"/><stop offset="1" stop-color="#081426"/></linearGradient></defs>
+              <line x1="30" y1="60" x2="30" y2="28" stroke="#10B981" stroke-width="4"/><line x1="135" y1="60" x2="135" y2="28" stroke="#10B981" stroke-width="4"/>
+              <line x1="30" y1="30" x2="135" y2="30" stroke="#10B981" stroke-width="4"/><line x1="30" y1="45" x2="135" y2="45" stroke="#10B981" stroke-width="3"/>
+              <circle cx="85" cy="14" r="8" fill="#F8FAFC"/><line x1="85" y1="22" x2="85" y2="48" stroke="#F8FAFC" stroke-width="4"/>
+              <line x1="175" y1="60" x2="175" y2="230" stroke="#00E5FF" stroke-width="2" stroke-dasharray="6 5"/>
+              <path d="M168 68 L175 60 L182 68 M168 222 L175 230 L182 222" stroke="#00E5FF" stroke-width="2" fill="none"/>
+              <text x="190" y="150" fill="#00E5FF" font-size="26" font-weight="900" font-family="Inter" transform="rotate(90 190 150)" text-anchor="middle">≥ 2 m</text>
+              <line x1="0" y1="232" x2="220" y2="232" stroke="#64748B" stroke-width="3"/>
+            </svg>
+            <p class="text-slate-300 text-center mt-2">邊緣、開口有墜落之虞 → <span class="text-lcy-emerald font-bold">護欄、護蓋</span></p>
+          </div>
+          <div class="col-span-8 grid grid-cols-2 gap-5">
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-200"><div class="flex items-center gap-3"><span class="step-num text-lcy-emerald font-bold">①</span><h3 class="text-xl font-bold text-white">護欄、護蓋</h3><span class="cite" data-c="設|224"></span></div><p class="text-slate-300 mt-3">2 公尺以上的邊緣及開口，要有適當強度的護欄、護蓋；設置困難或臨時拆除時，改用安全帶。</p></div>
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-300"><div class="flex items-center gap-3"><span class="step-num text-lcy-cyan font-bold">②</span><h3 class="text-xl font-bold text-white">工作台優先</h3><span class="cite" data-c="設|225"></span></div><p class="text-slate-300 mt-3">2 公尺以上處所要設工作台；有困難時張掛安全網，或使用安全帶並設安全母索。</p></div>
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-400"><div class="flex items-center gap-3"><span class="step-num text-lcy-amber font-bold">③</span><h3 class="text-xl font-bold text-white">天候不好就停</h3><span class="cite" data-c="設|226"></span></div><p class="text-slate-300 mt-3">強風、大雨等惡劣氣候有墜落危險時，要停止作業。</p></div>
+            <div class="tech-card rounded-2xl p-6 reveal-item delay-500 !border-lcy-red/45"><div class="flex items-center gap-3"><span class="step-num text-lcy-red font-bold">④</span><h3 class="text-xl font-bold text-white">合梯的禁忌</h3><span class="cite" data-c="設|230"></span></div><p class="text-slate-300 mt-3">梯腳與地面 75° 以內、兩腳扣牢；<span class="text-lcy-red font-bold">不得站在頂板作業</span>，也不得當兩工作面間的上下設備。</p></div>
+          </div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-500 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">先護欄、工作台，做不到才靠安全帶；合梯頂板永遠不站。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 13 缺氧救援 ===== -->
+    <section data-title="缺氧救援：別衝進去" data-ch="4" data-next="救援之後，如果真的發生職業災害，雇主還有哪些法定義務？" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-7">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-red">CH 04 · 高處與應變　2 / 3</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">同事在槽內倒下：<span class="text-lcy-red text-glow-red">不要直接衝進去</span></h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　知道缺氧事故的正確應變順序，避免救人的人也倒下</p>
+        </div>
+        <div class="grid grid-cols-4 gap-4 relative">
+          <svg class="absolute left-0 right-0 top-[38px] w-full h-4 pointer-events-none" viewBox="0 0 1000 10" preserveAspectRatio="none"><line x1="60" y1="5" x2="940" y2="5" stroke="#FF4D6A" stroke-opacity=".5" stroke-width="2" class="flow-dash"/></svg>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-100"><div class="w-14 h-14 rounded-full bg-[#1f0a10] border-2 border-lcy-red/60 flex items-center justify-center text-lcy-red text-2xl relative z-10"><i class="fa-solid fa-tower-broadcast"></i></div><div class="step-num text-xs text-slate-500 mt-4">01 · 監視人員</div><div class="text-xl font-bold text-white mt-1">立刻聯繫主管</div><p class="text-slate-400 mt-2 text-[15px]">發現異常，立刻聯繫缺氧作業主管與相關人員</p><div class="mt-3"><span class="cite" data-c="缺|21"></span></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-200"><div class="w-14 h-14 rounded-full bg-[#1f0a10] border-2 border-lcy-red/60 flex items-center justify-center text-lcy-red text-2xl relative z-10"><i class="fa-solid fa-person-walking-arrow-right"></i></div><div class="step-num text-xs text-slate-500 mt-4">02 · 雇主 / 負責人</div><div class="text-xl font-bold text-white mt-1">停止作業、全員退避</div><p class="text-slate-400 mt-2 text-[15px]">有立即缺氧危險時，下令停止作業，全部勞工退避</p><div class="mt-3"><span class="cite" data-c="缺|23"></span></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-300"><div class="w-14 h-14 rounded-full bg-[#1f0a10] border-2 border-lcy-red/60 flex items-center justify-center text-lcy-red text-2xl relative z-10"><i class="fa-solid fa-road-barrier"></i></div><div class="step-num text-xs text-slate-500 mt-4">03 · 管制現場</div><div class="text-xl font-bold text-white mt-1">禁止無關人員進入</div><p class="text-slate-400 mt-2 text-[15px]">危險解除前，指定人員以外不得進入，並公告</p><div class="mt-3"><span class="cite" data-c="缺|23"></span></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-400 !border-lcy-emerald/50"><div class="w-14 h-14 rounded-full bg-[#071a1a] border-2 border-lcy-emerald/60 flex items-center justify-center text-lcy-emerald text-2xl relative z-10"><i class="fa-solid fa-mask-ventilator"></i></div><div class="step-num text-xs text-slate-500 mt-4">04 · 救援人員</div><div class="text-xl font-bold text-white mt-1">戴空氣呼吸器才進入</div><p class="text-slate-400 mt-2 text-[15px]">救援作業期間要使用空氣呼吸器等呼吸防護具</p><div class="mt-3"><span class="cite" data-c="缺|28"></span></div></div>
+        </div>
+        <div class="tech-card rounded-2xl px-7 py-5 reveal-item delay-500 !border-lcy-amber/45 flex items-center gap-5">
+          <i class="fa-solid fa-circle-question text-lcy-amber text-2xl"></i>
+          <p class="text-lg text-slate-200">想一想：你是監視人員，手邊沒有呼吸防護具，同事昏倒在槽內。<br><span class="text-lcy-amber font-bold">答案：</span>立刻聯繫缺氧作業主管；救援人員戴好呼吸防護具才能進入。<span class="text-white">沒戴就衝進去，只會多一個人倒下。</span></p>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-500 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">先求援、再撤離；沒有呼吸防護具，不進去救人。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 14 職災通報 ===== -->
+    <section data-title="職災 8 小時通報" data-ch="4" data-next="主線走完了，最後一起回顧整條路。" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-7">
+        <div class="reveal-item">
+          <div class="ch-chip text-lcy-red">CH 04 · 高處與應變　3 / 3</div>
+          <h2 class="text-5xl font-extrabold text-white mt-3">發生職業災害：搶救、通報、保留現場</h2>
+          <p class="goal pl-4 mt-4 text-lg text-slate-300"><span class="text-lcy-cyan font-semibold">學習目標</span>　知道哪些災害要在 8 小時內通報，以及現場不能動 <span class="cite" data-c="法|37"></span></p>
+        </div>
+        <div class="grid grid-cols-12 gap-6">
+          <div class="col-span-4 tech-card rounded-2xl p-8 reveal-item delay-100 !border-lcy-red/50 relative overflow-hidden text-center">
+            <div class="absolute -left-10 -bottom-10 w-48 h-48 rounded-full bg-lcy-red/15 blur-2xl"></div>
+            <i class="fa-regular fa-clock text-4xl text-lcy-red"></i>
+            <div class="flex items-baseline justify-center mt-4"><span class="text-[120px] leading-none font-black text-white text-glow-red counter-val" data-target="8">8</span><span class="text-3xl font-bold text-lcy-red ml-2">小時</span></div>
+            <p class="text-xl text-white font-bold mt-3">內通報勞動檢查機構</p>
+            <p class="text-slate-400 mt-2">由雇主通報</p>
+          </div>
+          <div class="col-span-8 flex flex-col gap-4">
+            <div class="text-sm font-mono text-slate-400 reveal-item delay-200">符合下列任一種，就要 8 小時內通報：</div>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="tech-card rounded-2xl p-6 reveal-item delay-200 text-center"><i class="fa-solid fa-skull-crossbones text-3xl text-lcy-red"></i><div class="text-2xl font-bold text-white mt-3">死亡災害</div></div>
+              <div class="tech-card rounded-2xl p-6 reveal-item delay-300 text-center"><i class="fa-solid fa-people-group text-3xl text-lcy-amber"></i><div class="text-2xl font-bold text-white mt-3">罹災 ≥ 3 人</div></div>
+              <div class="tech-card rounded-2xl p-6 reveal-item delay-400 text-center"><i class="fa-solid fa-bed-pulse text-3xl text-lcy-cyan"></i><div class="text-2xl font-bold text-white mt-3">≥ 1 人需住院</div></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="tech-card rounded-2xl p-5 reveal-item delay-400 flex gap-4 items-start"><i class="fa-solid fa-kit-medical text-2xl text-lcy-emerald mt-1"></i><div><div class="text-lg font-bold text-white">先急救、搶救</div><p class="text-slate-400 text-[15px] mt-1">雇主要立即採取必要的急救、搶救等措施</p></div></div>
+              <div class="tech-card rounded-2xl p-5 reveal-item delay-500 flex gap-4 items-start"><i class="fa-solid fa-hand text-2xl text-lcy-amber mt-1"></i><div><div class="text-lg font-bold text-white">不得移動或破壞現場</div><p class="text-slate-400 text-[15px] mt-1">除必要急救搶救外，須經司法機關或勞動檢查機構許可</p></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway rounded-2xl px-6 py-4 reveal-item delay-500 flex items-center gap-4"><i class="fa-solid fa-lightbulb text-lcy-amber text-xl"></i><span class="text-lcy-amber font-bold">記住這句</span><span class="text-xl text-white">死亡、3 人以上、1 人住院 → 8 小時內通報；救人可以，現場別亂動。</span></div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span class="next"></span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+    <!-- ===== 15 RECAP ===== -->
+    <section data-title="總複習" data-ch="5" class="slide-section">
+      <div class="max-w-7xl mx-auto w-full my-auto space-y-7">
+        <div class="reveal-item text-center">
+          <span class="ch-chip text-lcy-cyan">RECAP · 總複習</span>
+          <h2 class="text-5xl font-extrabold text-white mt-3">一條主線，帶走這些數字</h2>
+          <p class="text-xl text-slate-300 mt-3">把數字記住，現場就知道什麼時候該停下來</p>
+        </div>
+        <div class="grid grid-cols-4 gap-5">
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-100 !border-lcy-emerald/40"><div class="ch-chip text-lcy-emerald">CH 01 · 先保護自己</div><div class="mt-4 space-y-3"><div class="flex items-center justify-between"><span class="text-slate-300">危險時</span><span class="text-2xl font-black text-lcy-emerald">停 · 退 · 報</span></div><div class="flex items-center justify-between"><span class="text-slate-300">訓練、守則</span><span class="text-lg font-bold text-white">你的義務</span></div></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-200 !border-lcy-amber/40"><div class="ch-chip text-lcy-amber">CH 02 · 看懂化學品</div><div class="mt-4 space-y-3"><div class="flex items-center justify-between"><span class="text-slate-300">撤離門檻</span><span class="text-2xl font-black text-lcy-amber">30% LEL</span></div><div class="flex items-center justify-between"><span class="text-slate-300">SDS 檢討</span><span class="text-2xl font-black text-lcy-amber">3 年</span></div></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-300 !border-lcy-cyan/40"><div class="ch-chip text-lcy-cyan">CH 03 · 進設備作業</div><div class="mt-4 space-y-3"><div class="flex items-center justify-between"><span class="text-slate-300">氧氣濃度</span><span class="text-2xl font-black text-lcy-cyan">≥ 18%</span></div><div class="flex items-center justify-between"><span class="text-slate-300">面罩連續</span><span class="text-2xl font-black text-lcy-cyan">≤ 1 hr</span></div><div class="flex items-center justify-between"><span class="text-slate-300">純氧 / 氧氣換氣</span><span class="text-2xl font-black text-lcy-red">禁止</span></div></div></div>
+          <div class="tech-card rounded-2xl p-6 reveal-item delay-400 !border-lcy-red/40"><div class="ch-chip text-lcy-red">CH 04 · 高處與應變</div><div class="mt-4 space-y-3"><div class="flex items-center justify-between"><span class="text-slate-300">防墜起點</span><span class="text-2xl font-black text-lcy-red">2 m</span></div><div class="flex items-center justify-between"><span class="text-slate-300">職災通報</span><span class="text-2xl font-black text-lcy-red">8 hr</span></div></div></div>
+        </div>
+        <div class="reveal-item delay-500 text-center">
+          <p class="text-3xl font-bold text-white">有疑慮就停下來，<span class="bg-gradient-to-r from-lcy-cyan to-lcy-emerald bg-clip-text text-transparent">安全永遠排第一。</span></p>
+          <p class="text-sm text-slate-500 mt-5">本教材依全國法規資料庫條文整理，僅供新人學習參考；實際適用請以全國法規資料庫最新條文及公司 SOP 為準。</p>
+        </div>
+      </div>
+      <div class="max-w-7xl mx-auto w-full flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-3"><span>Q &amp; A</span><span class="font-mono text-slate-400 pg"></span></div>
+    </section>
+
+  </main>
+
+  <div id="deck-controls" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md text-white px-3.5 py-2 rounded-full shadow-2xl border border-white/15">
+    <button id="btn-overview" title="頁面總覽 (G)" class="p-2 rounded-full hover:bg-white/15 transition text-slate-300 hover:text-white"><i class="fa-solid fa-grip text-sm"></i></button>
+    <div class="h-4 w-[1px] bg-white/20"></div>
+    <button id="btn-prev" title="上一頁 (←)" class="p-2 rounded-full hover:bg-white/15 transition"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+    <span id="slide-counter" class="font-mono text-xs font-bold tracking-wider px-2 min-w-[58px] text-center text-lcy-cyan">1 / 15</span>
+    <button id="btn-next" title="下一頁 (→ / 空白鍵)" class="p-2 rounded-full hover:bg-white/15 transition"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+    <div class="h-4 w-[1px] bg-white/20"></div>
+    <button id="btn-fullscreen" title="全螢幕 (F)" class="p-2 rounded-full hover:bg-white/15 transition text-slate-300 hover:text-white"><i class="fa-solid fa-expand text-sm"></i></button>
+  </div>
+
+  <div id="overview-modal" class="fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-lg hidden flex-col p-6 sm:p-10 overflow-y-auto">
+    <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
+      <span class="text-white/70 text-sm font-medium tracking-wide">頁面總覽</span>
+      <button id="btn-close-overview" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="overview-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+  </div>
+
+  <script>
+    // ---- Law citations: data-c="法|18" -> link to ../raw/<law>.md#<article anchor> ----
+    const LAWS = {
+      '法': { file: '職業安全衛生法', short: '職安法', ch: { '18': '第二章安全衛生設施', '20': '第二章安全衛生設施', '32': '第三章安全衛生管理', '34': '第三章安全衛生管理', '37': '第四章監督與檢查' } },
+      '設': { file: '職業安全衛生設施規則', short: '設施規則', ch: { '327': '第十三章附則', '171': '第一節一般規定', '173': '第一節一般規定', '174': '第一節一般規定', '175': '第一節一般規定', '177': '第一節一般規定', '57': '第一節一般規定', '29-1': '第二節局限空間', '29-4': '第二節局限空間', '29-5': '第二節局限空間', '29-6': '第二節局限空間', '198': '第四節化學設備及其附屬設備', '254': '第二節停電作業', '224': '第一節人體墜落防止', '225': '第一節人體墜落防止', '226': '第一節人體墜落防止', '230': '第一節人體墜落防止' } },
+      '通': { file: '危害性化學品標示及通識規則', short: '通識規則', ch: { '5': '第二章標示', '7': '第二章標示', '8': '第二章標示', '12': '第三章安全資料表清單揭示及通識措施', '13': '第三章安全資料表清單揭示及通識措施', '15': '第三章安全資料表清單揭示及通識措施', '17': '第三章安全資料表清單揭示及通識措施' } },
+      '缺': { file: '缺氧症預防規則', short: '缺氧規則', ch: { '3': '第一章總則', '5': '第二章設施', '10': '第二章設施', '16': '第二章設施', '20': '第二章設施', '21': '第二章設施', '23': '第二章設施', '28': '第二章設施', '30': '第二章設施' } }
+    };
+    document.querySelectorAll('[data-c]').forEach(el => {
+      const [k, art] = el.dataset.c.split('|');
+      const law = LAWS[k];
+      const a = document.createElement('a');
+      a.className = 'cite';
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.href = `../raw/${law.file}.md#第-${art}-條${law.ch[art] || ''}`;
+      a.title = `開啟 ${law.file} 第 ${art} 條原文`;
+      a.textContent = `${law.short} §${art}`;
+      el.replaceWith(a);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // background particles
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let width, height; const particles = [];
+      function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+      window.addEventListener('resize', resizeCanvas); resizeCanvas();
+      for (let i = 0; i < Math.min(60, Math.floor(width * height / 22000)); i++) {
+        particles.push({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - .5) * .45, vy: (Math.random() - .5) * .45, r: Math.random() * 2 + 1, c: Math.random() > .35 ? 'rgba(0,229,255,.45)' : 'rgba(16,185,129,.45)' });
+      }
+      (function anim() {
+        ctx.clearRect(0, 0, width, height);
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i]; p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > width) p.vx *= -1; if (p.y < 0 || p.y > height) p.vy *= -1;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.c; ctx.fill();
+          for (let j = i + 1; j < particles.length; j++) {
+            const q = particles[j], d = Math.hypot(p.x - q.x, p.y - q.y);
+            if (d < 145) { ctx.beginPath(); ctx.strokeStyle = `rgba(0,229,255,${.12 * (1 - d / 145)})`; ctx.lineWidth = .8; ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+          }
+        }
+        requestAnimationFrame(anim);
+      })();
+
+      // slide engine
+      const sections = Array.from(document.querySelectorAll('.slide-section'));
+      sections.forEach((sec, i) => {
+        const frame = document.createElement('div');
+        frame.className = 'slide-frame';
+        frame.dataset.title = sec.dataset.title; frame.dataset.ch = sec.dataset.ch;
+        sec.parentNode.insertBefore(frame, sec); frame.appendChild(sec);
+        const pg = sec.querySelector('.pg'); if (pg) pg.textContent = String(i + 1).padStart(2, '0') + ' / ' + sections.length;
+        const nx = sec.querySelector('.next');
+        if (nx && sec.dataset.next) nx.innerHTML = `<span class="text-lcy-cyan font-semibold">下一頁 →</span> <span class="text-slate-400">${sec.dataset.next}</span>`;
+        else if (nx && i === 1) nx.textContent = '依全國法規資料庫條文整理 · 僅供教學參考';
+      });
+      const slides = Array.from(document.querySelectorAll('.slide-frame'));
+      const total = slides.length;
+      const headerEl = document.querySelector('header');
+      const progress = document.getElementById('top-progress-bar');
+      const counter = document.getElementById('slide-counter');
+      const btnPrev = document.getElementById('btn-prev'), btnNext = document.getElementById('btn-next');
+      const modal = document.getElementById('overview-modal'), grid = document.getElementById('overview-grid');
+      let current = 0;
+
+      // chapter rail
+      const CH = [['01', '先保護自己', 3], ['02', '看懂化學品', 5], ['03', '進設備作業', 8], ['04', '高處與應變', 12]];
+      const rail = document.getElementById('chapter-rail');
+      CH.forEach(([n, name, pg]) => {
+        const b = document.createElement('button');
+        b.className = 'rail-seg flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 hover:border-lcy-cyan/50 hover:text-white';
+        b.innerHTML = `<span class="rail-dot w-1.5 h-1.5 rounded-full bg-slate-600"></span><span class="font-mono">${n}</span><span>${name}</span>`;
+        b.addEventListener('click', () => go(pg - 1));
+        rail.appendChild(b);
+      });
+      const railSegs = Array.from(rail.children);
+
+      function fitStage() {
+        const W = document.documentElement.clientWidth, H = window.innerHeight;
+        const hh = headerEl.offsetHeight;
+        let s = Math.min(W / 1600, H / 900), off = 0;
+        if (hh > 84 * s) { s = Math.min(W / 1600, (H - hh) / 900); off = hh; }
+        document.documentElement.style.setProperty('--s', s);
+        document.documentElement.style.setProperty('--off', off + 'px');
+      }
+      fitStage(); window.addEventListener('resize', fitStage);
+      window.addEventListener('orientationchange', () => setTimeout(fitStage, 150));
+
+      function go(i) {
+        if (i < 0 || i >= total) return;
+        current = i;
+        slides.forEach((f, k) => f.classList.toggle('slide-active', k === i));
+        counter.textContent = `${i + 1} / ${total}`;
+        progress.style.width = `${(i + 1) / total * 100}%`;
+        btnPrev.disabled = i === 0; btnNext.disabled = i === total - 1;
+        const ch = +slides[i].dataset.ch;
+        railSegs.forEach((s, k) => { s.classList.toggle('on', k + 1 === ch); s.classList.toggle('done', k + 1 < ch); });
+        runCounters(slides[i]);
+        try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+      }
+      const next = () => go(current + 1), prev = () => go(current - 1);
+
+      function runCounters(section) {
+        section.querySelectorAll('.counter-val').forEach(el => {
+          const target = parseFloat(el.dataset.target), t0 = performance.now();
+          (function tick(now) {
+            const p = Math.min((now - t0) / 1100, 1);
+            el.textContent = p < 1 ? Math.round(target * (1 - Math.pow(1 - p, 3))) : target;
+            if (p < 1) requestAnimationFrame(tick);
+          })(t0);
+        });
+      }
+
+      document.querySelectorAll('[data-go]').forEach(el => el.addEventListener('click', e => { e.stopPropagation(); go(+el.dataset.go - 1); }));
+      btnNext.addEventListener('click', next); btnPrev.addEventListener('click', prev);
+      document.getElementById('logo-home').addEventListener('click', e => { e.preventDefault(); go(0); });
+      document.getElementById('btn-fullscreen').addEventListener('click', () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {}); else document.exitFullscreen().catch(() => {});
+      });
+
+      const openOverview = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); };
+      const closeOverview = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+      slides.forEach((f, idx) => {
+        const card = document.createElement('button');
+        card.className = 'text-left p-4 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-lcy-cyan/50 transition flex flex-col justify-between group';
+        const chTxt = +f.dataset.ch >= 1 && +f.dataset.ch <= 4 ? `CH 0${f.dataset.ch}` : '';
+        card.innerHTML = `<div class="flex justify-between items-center w-full mb-2"><span class="text-xs font-bold font-mono text-lcy-cyan">${String(idx + 1).padStart(2, '0')}</span><span class="text-[10px] font-mono text-slate-500">${chTxt}</span></div><div class="text-sm font-bold text-white">${f.dataset.title || ''}</div>`;
+        card.addEventListener('click', () => { go(idx); closeOverview(); });
+        grid.appendChild(card);
+      });
+      document.getElementById('btn-overview').addEventListener('click', openOverview);
+      document.getElementById('btn-close-overview').addEventListener('click', closeOverview);
+
+      document.addEventListener('keydown', e => {
+        if (!modal.classList.contains('hidden')) { if (e.key === 'Escape') closeOverview(); return; }
+        const k = e.key;
+        if (['ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(k) || (k === ' ' && !e.shiftKey)) { e.preventDefault(); next(); }
+        else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(k) || (k === ' ' && e.shiftKey)) { e.preventDefault(); prev(); }
+        else if (k === 'Home') { e.preventDefault(); go(0); }
+        else if (k === 'End') { e.preventDefault(); go(total - 1); }
+        else if (k.toLowerCase() === 'g') openOverview();
+        else if (k.toLowerCase() === 'f') document.getElementById('btn-fullscreen').click();
+      });
+
+      let tx = 0, ty = 0, lastSwipe = 0;
+      document.addEventListener('click', e => {
+        if (e.target.closest('a, button, [data-go], #deck-controls, #overview-modal, header')) return;
+        if (String(window.getSelection && window.getSelection()).length > 0) return;
+        if (Date.now() - lastSwipe < 600) return;
+        e.shiftKey ? prev() : next();
+      });
+      document.addEventListener('contextmenu', e => {
+        if (e.target.closest('a, button, header, #deck-controls, #overview-modal')) return;
+        e.preventDefault(); prev();
+      });
+      let wheelLock = 0;
+      window.addEventListener('wheel', e => {
+        if (!modal.classList.contains('hidden')) return;
+        const now = Date.now(); if (now < wheelLock || Math.abs(e.deltaY) < 25) return;
+        wheelLock = now + 800; e.deltaY > 0 ? next() : prev();
+      }, { passive: true });
+      window.addEventListener('touchstart', e => { tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY; }, { passive: true });
+      window.addEventListener('touchend', e => {
+        if (!modal.classList.contains('hidden')) return;
+        const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < 45) return;
+        lastSwipe = Date.now();
+        if (Math.abs(dx) > Math.abs(dy)) (dx < 0 ? next() : prev()); else (dy < 0 ? next() : prev());
+      }, { passive: true });
+
+      let idleT;
+      const wake = () => { document.body.classList.remove('ui-idle'); clearTimeout(idleT); idleT = setTimeout(() => { if (modal.classList.contains('hidden')) document.body.classList.add('ui-idle'); }, 2500); };
+      ['mousemove', 'mousedown', 'touchstart'].forEach(ev => window.addEventListener(ev, wake, { passive: true }));
+      wake();
+
+      const start = parseInt((location.hash || '').replace('#', ''), 10);
+      go(start >= 1 && start <= total ? start - 1 : 0);
+    });
+  </script>
+</body>
+</html>

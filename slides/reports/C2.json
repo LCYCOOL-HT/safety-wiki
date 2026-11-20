@@ -1,7 +1,8 @@
 {
  "check": "C2",
- "attempt": 3,
+ "attempt": 4,
  "history": [
+  "pass",
   "pass",
   "pass",
   "pass"
@@ -15,8 +16,8 @@
   "removed_nodes": []
  },
  "counts": {
-  "main": 15,
-  "ext": 10
+  "main": 12,
+  "ext": 0
  },
  "review": null
 }

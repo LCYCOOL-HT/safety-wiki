@@ -1,0 +1,17 @@
+{
+ "check": "C3",
+ "deck": "slides/safety_training_deck.html",
+ "attempt": 1,
+ "history": [
+  "pass"
+ ],
+ "rejections": 0,
+ "review_rejections": 0,
+ "max_rejections": 3,
+ "slides": 15,
+ "program": {
+  "pass": true,
+  "errors": []
+ },
+ "review": null
+}

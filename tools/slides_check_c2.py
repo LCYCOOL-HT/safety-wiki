@@ -2,12 +2,12 @@
 用法：python -X utf8 tools/slides_check_c2.py .
 檢查項目（依 brief 與 AGENTS.md 7.5）：
 - 結構：主線從 open 依序到 end；每個節點都在主線或被主線節點 related 連到；related 目標存在。
-- 每頁格式：學習目標 ≤30 字；重點 3～5 點、每點 ≤60 字、每點都有事實；自我檢查 3～4 個選項、答案索引有效、有解說和事實。
+- 每頁格式：學習目標 ≤30 字；重點 3～5 點、每點 ≤60 字、每點都有事實；主線頁要有「記住這句」（takeaway），其中的數字要對得到本頁事實；自我檢查為選用，有的話 3～4 個選項、答案索引有效、有解說和事實。
 - 可追溯：所有事實編號都存在於 source_pack。
 - 數字：重點、正確選項、解說裡的數字，都要出現在所引用事實的原文裡（中文數字和阿拉伯數字視為相同）。
 - C1 warn 的事實：不可用在重點和自我檢查（不可自行補寫例外，因為例外內容不在 wiki）。
 - 開場頁免責聲明要和 wiki 首頁原文相同。
-- 欄位白名單：每個節點只能有 brief 規定的欄位（brief 修訂後拿掉學姊，頁面上不可放 5 個區塊以外的文字）。
+- 欄位白名單：每個節點只能有 brief 規定的欄位（brief 修訂後拿掉學姊，頁面上不可放規定區塊以外的文字）。
 - 資料不足：主線或延伸節點的頁面若不在 source_pack，列入 removed_nodes（應由 N2 處理）。
 結果寫入 slides/reports/C2.json：history 記錄每次執行的結果；退回次數＝程式不通過次數＋獨立審查不通過次數。
 另外產生 slides/outline.md（給人審閱，也是獨立審查的輸入）。"""
@@ -19,7 +19,7 @@ ol = json.loads((root / 'slides/outline.json').read_text(encoding='utf-8'))
 LIM = {'goal': 30, 'point': 60}
 BASE = {'id', 'kind', 'title', 'goal'}
 ALLOWED = {'open': BASE | {'info', 'disclaimer', 'disclaimer_text'}, 'end': BASE | {'info', 'more_wiki'},
-           'main': BASE | {'chapter', 'page', 'points', 'quiz', 'related'}, 'ext': BASE | {'page', 'points', 'quiz', 'related'}}
+           'main': BASE | {'chapter', 'page', 'points', 'quiz', 'related', 'takeaway', 'next_hint'}, 'ext': BASE | {'page', 'points', 'quiz', 'related'}}
 CN = {'零': 0, '一': 1, '二': 2, '兩': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9}
 
 def cn2int(s):
@@ -70,7 +70,7 @@ if nodes.get('open', {}).get('disclaimer_text') != pack.get('disclaimer'):
 for nid, n in nodes.items():
     if len(n.get('goal', '')) > LIM['goal']: err(nid, f"學習目標超過 {LIM['goal']} 字（{len(n['goal'])}）")
     extra_keys = set(n) - ALLOWED[n['kind']]
-    if extra_keys: err(nid, f'有 brief 沒有規定的欄位（頁面上不可放 5 個區塊以外的文字）：{sorted(extra_keys)}')
+    if extra_keys: err(nid, f'有 brief 沒有規定的欄位（頁面上不可放規定區塊以外的文字）：{sorted(extra_keys)}')
     if n['kind'] in ('open', 'end'):
         continue
     if n['page'] not in pack['pages']:
@@ -89,8 +89,14 @@ for nid, n in nodes.items():
         flagged = [x for x in ids if 'review' in facts[x]]
         if flagged:
             err(nid, f'重點 {i} 用到 C1 warn 事實 {flagged}（規則：warn 事實不可使用；不可自行補寫例外）')
+    tk = n.get('takeaway', '')
+    if n['kind'] == 'main':
+        if not tk: err(nid, '沒有「記住這句」')
+        allsrc = ''.join(facts[x]['text'] for p in pts for x in resolve(n, p.get('facts', [])) if x in facts)
+        extra = numbers(tk) - numbers(allsrc)
+        if extra: err(nid, f'「記住這句」的數字 {sorted(extra)} 不在本頁重點所引事實中：{tk}')
     q = n.get('quiz')
-    if not q: err(nid, '沒有自我檢查'); continue
+    if not q: continue  # 自我檢查改為選用（G1 後使用者決定）
     if not 3 <= len(q['options']) <= 4: err(nid, '自我檢查選項要 3～4 個')
     if not 0 <= q['answer'] < len(q['options']): err(nid, '答案索引無效')
     if not q.get('explain'): err(nid, '自我檢查沒有解說')
@@ -107,7 +113,7 @@ for nid, n in nodes.items():
 
 main_n = sum(1 for n in nodes.values() if n['kind'] == 'main')
 ext_n = sum(1 for n in nodes.values() if n['kind'] == 'ext')
-if main_n + ext_n + 2 > 27: err('-', f'頁數超過 27（主線 {main_n}＋延伸 {ext_n}＋開場結尾 2）')
+if main_n + ext_n + 3 > 15: err('-', f'頁數超過 15（主線 {main_n}＋延伸 {ext_n}＋封面、地圖、總複習 3）')
 
 rep = root / 'slides/reports/C2.json'
 prev = json.loads(rep.read_text(encoding='utf-8')) if rep.exists() else {}

@@ -65,12 +65,12 @@
 <text x="379.0" y="684" font-size="13" fill="#4A5568">回報被移除的頁面</text>
 <rect x="305.0" y="724.0" width="330" height="56" rx="6" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
 <text x="319.0" y="748" font-size="17" font-weight="700" fill="#2B6CB0">■ N3</text>
-<text x="379.0" y="748" font-size="17" font-weight="700" fill="#1A202C">組裝 HTML</text>
-<text x="379.0" y="770" font-size="13" fill="#4A5568">slides/index.html</text>
+<text x="379.0" y="748" font-size="17" font-weight="700" fill="#1A202C">製作投影片</text>
+<text x="379.0" y="770" font-size="13" fill="#4A5568">safety_training_deck.html</text>
 <rect x="305.0" y="810.0" width="330" height="56" rx="16" fill="#FFF4E5" stroke="#C05621" stroke-width="2"/>
 <text x="319.0" y="834" font-size="17" font-weight="700" fill="#C05621">○ C3</text>
 <text x="379.0" y="834" font-size="17" font-weight="700" fill="#1A202C">檢查投影片</text>
-<text x="379.0" y="856" font-size="13" fill="#4A5568">reports/C3.json ＋ 截圖</text>
+<text x="379.0" y="856" font-size="13" fill="#4A5568">reports/C3.json</text>
 <rect x="305.0" y="896.0" width="330" height="56" rx="28" fill="#EDF7ED" stroke="#2F855A" stroke-width="2"/>
 <text x="319.0" y="920" font-size="17" font-weight="700" fill="#2F855A">◆ G2</text>
 <text x="379.0" y="920" font-size="17" font-weight="700" fill="#1A202C">人：試用</text>
@@ -91,14 +91,14 @@
 <text x="814" y="616" font-size="13" fill="#2D3748">第 3 次仍不通過 → 停下，交給人處理。</text>
 <text x="814" y="638" font-size="13" fill="#2D3748">人工修改不計入，修改後次數重新計算。</text>
 <rect x="800" y="656" width="410" height="122" rx="8" fill="#FFFFFF" stroke="#2B6CB0" stroke-width="1.5"/>
-<text x="814" y="680" font-size="15" font-weight="700" fill="#2B6CB0">每頁投影片（新人自學，不放圖）</text>
-<text x="814" y="704" font-size="13" fill="#2D3748">位置、學習目標、重點（附條號）、</text>
-<text x="814" y="726" font-size="13" fill="#2D3748">一題單選自我檢查（點選後顯示對錯、</text>
-<text x="814" y="748" font-size="13" fill="#2D3748">解說和條號連結）、導覽。題目和答案</text>
-<text x="814" y="770" font-size="13" fill="#2D3748">都要對得到 wiki；不記錄學員進度。</text>
+<text x="814" y="680" font-size="15" font-weight="700" fill="#2B6CB0">每頁投影片（新人自學，一頁一個觀念）</text>
+<text x="814" y="704" font-size="13" fill="#2D3748">章節定位、標題、學習目標、重點（附條號）、</text>
+<text x="814" y="726" font-size="13" fill="#2D3748">記住這句、下一頁。內容都來自大綱、</text>
+<text x="814" y="748" font-size="13" fill="#2D3748">對得到 wiki；視覺版型依使用者選定的</text>
+<text x="814" y="770" font-size="13" fill="#2D3748">設計稿；不記錄學員進度。</text>
 <rect x="800" y="898" width="410" height="100" rx="8" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.5"/>
 <text x="814" y="922" font-size="15" font-weight="700" fill="#4A5568">檢查方式</text>
-<text x="814" y="946" font-size="13" fill="#2D3748">程式：條號、連結、字數、頁數、截圖</text>
+<text x="814" y="946" font-size="13" fill="#2D3748">程式：條號、連結、字數、頁數、一致性</text>
 <text x="814" y="968" font-size="13" fill="#2D3748">獨立審查：另一個 agent 只看產物，</text>
 <text x="814" y="990" font-size="13" fill="#2D3748">判斷內容是否忠於 wiki、是否看得懂</text>
 <rect x="40" y="1120" width="26" height="18" rx="4" fill="#E8F1FB" stroke="#2B6CB0" stroke-width="2"/>
