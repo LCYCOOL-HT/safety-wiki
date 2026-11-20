@@ -6,8 +6,8 @@
   "fail",
   "pass"
  ],
- "rejections": 2,
- "review_rejections": 1,
+ "rejections": 3,
+ "review_rejections": 2,
  "max_rejections": 3,
  "program": {
   "pass": true,
@@ -18,5 +18,6 @@
   "main": 15,
   "ext": 10
  },
- "review": null
+ "review": null,
+ "brake": "觸發：第 3 次退回，停止自動修正，交使用者決定"
 }
