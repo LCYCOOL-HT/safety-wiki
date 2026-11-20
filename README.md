@@ -4,6 +4,8 @@
 
 👉 **從這裡開始：[wiki/index.md](wiki/index.md)**
 
+🎓 **新人自學簡報：[化工廠新人工安入門](https://lcycool-ht.github.io/safety-wiki/slides/)**（線上觀看，15 頁）
+
 > [!IMPORTANT]
 > **免責聲明**
 >
@@ -15,4 +17,5 @@
 |---|---|
 | [wiki/](wiki/index.md) | 整理後的知識庫：法規、情境、名詞 |
 | [raw/](raw/) | 6 部法規原文（全國法規資料庫，一字不改） |
+| [slides/](slides/) | 新人自學簡報與製作紀錄（大綱、檢查報告、反思） |
 | [AGENTS.md](AGENTS.md) | 給 LLM agent 的維護規則 |
