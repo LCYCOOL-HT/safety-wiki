@@ -1,0 +1,32 @@
+{
+  "previous": {
+    "resolved": 33,
+    "not_resolved": []
+  },
+  "issues": [
+    {"node": "m02", "where": "senpai", "type": "senpai", "severity": "error", "reason": "「覺得不對勁，先退到安全的地方，再報告」是 §18 的行為要求（退避後報告），而且省略了「不危及其他工作者安全」的前提、把「立即危險」放寬成「覺得不對勁」。", "suggestion": "改為「這頁是保護你自己的權利，重點第 1、2 點要記住喔。」"},
+    {"node": "m07", "where": "senpai", "type": "senpai", "severity": "error", "reason": "「沒有許可、沒有測定，就不要進去」是進入許可與測定的法規要求，應只放在重點。", "suggestion": "改為「進槽前的每一步都不能省，我們照流程圖一步一步看。」"},
+    {"node": "m15", "where": "senpai", "type": "senpai", "severity": "error", "reason": "「記得先救人，再依程序通報」把依據中雇主的急救、通報義務說成新人要做的順序，還可能和 m13「沒戴呼吸防護具不可進入救人」的教導衝突。", "suggestion": "改為「希望你永遠用不到這一頁。萬一真的發生了，重點的順序要記住喔。」"},
+    {"node": "x01", "where": "senpai", "type": "senpai", "severity": "error", "reason": "「作業時記得讓它一直開著」等同依據 #5「作業時不得停止運轉」的法規要求；「擋掉看不見的蒸氣」也是依據沒有的說明。", "suggestion": "改為「通風設備很重要，重點第 1 點要記住喔。」"},
+    {"node": "m03", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「保持乾淨」是依據 #1 的保養要求，台詞重述了法規要求。", "suggestion": "改為「防護具要選對、戴好，重點第 1 點的保養也別忘了喔。」"},
+    {"node": "m03", "where": "quiz", "type": "faithful", "severity": "warn", "reason": "選項「確保供氣和性能正常」的「性能」不在依據 #15，依據只寫「確保供氣正常」。", "suggestion": "改為「確保供氣正常」。"},
+    {"node": "m04", "where": "重點1", "type": "faithful", "severity": "warn", "reason": "依據限定「裝有危害性化學品的容器」才要標示，重點寫成反應器、儲槽、管路「都要標示」，適用範圍被擴大。", "suggestion": "改為「裝有危害性化學品的容器（含反應器、儲槽、管路），雇主都要標示」。"},
+    {"node": "m04", "where": "重點2", "type": "faithful", "severity": "warn", "reason": "重點與圖中的「警示語」沒有對應依據（只引 #3、#4、#6、#10）；且重點2引用的 #10 是一百毫升以下的豁免，和重點4重複、與本點內容無關。", "suggestion": "補上 wiki 中「警示語」那一列原句作依據，並從重點2移除 #10。"},
+    {"node": "m04", "where": "圖", "type": "faithful", "severity": "warn", "reason": "圖說「周圍標出……七個區塊」，但周圍只列六項（加中央圖式才是七項），而且警示語無依據。", "suggestion": "改為「中央危害圖式，周圍六個區塊」，並補警示語依據。"},
+    {"node": "m04", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「看不懂或沒有標示的容器，先問人，不要用猜的」是依據沒有的作業建議。", "suggestion": "改為「標示就像化學品的身分證，重點的幾個區塊我們一起認一認。」"},
+    {"node": "m05", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「第一次用新的化學品之前，記得先找安全資料表來看」是依據沒有的作業建議。", "suggestion": "改為「安全資料表很重要，重點第 3 點的位置要記住喔。」"},
+    {"node": "m07", "where": "圖", "type": "faithful", "severity": "warn", "reason": "流程圖把七個步驟排成固定先後（如先公告再測定、先通風再簽許可），依據並沒有規定這個順序。", "suggestion": "改成「進入前要完成的事項」清單圖，不標先後箭頭；或只保留依據有明示先後的「簽署許可後才能進入」。"},
+    {"node": "m09", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「看起來空空的，不代表空氣是安全的」是對缺氧危險的事實陳述，雖接近依據 #1，但不應放在台詞。", "suggestion": "改為「這頁的隔離步驟很重要，重點第 1、2 點要做確實。」"},
+    {"node": "m10", "where": "圖", "type": "faithful", "severity": "warn", "reason": "流程順序（隔離→上鎖掛牌→釋壓→確認）是依據沒有規定的先後，且「切斷電源」不在依據原文。", "suggestion": "改為不分先後的檢查清單，用依據原詞「停止運轉及送料、上鎖及標示、釋壓關斷或阻隔、雙重關閉或盲板、停電作業」。"},
+    {"node": "m10", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「上鎖掛牌是在保護正在設備裡工作的人」是依據沒有的目的說明（依據寫的是防止誤操作、誤送料）。", "suggestion": "改為「上鎖掛牌一個步驟都不能跳過，我們照重點一點一點看。」"},
+    {"node": "m12", "where": "圖", "type": "faithful", "severity": "warn", "reason": "決策圖把「設工作台」當作護欄、護蓋不能設置時的替代，但依據 #2 寫的是護欄困難時用安全帶，#3 的工作台是另一條規定。", "suggestion": "分支改為「不能設護欄、護蓋 → 使用安全帶」，另列「2 公尺以上處所設工作台；有困難時張安全網或用安全帶並鉤掛安全母索」。"},
+    {"node": "m14", "where": "重點5", "type": "faithful", "severity": "warn", "reason": "依據 #2 限定「設置特定化學設備的作業場所」要設搶救組織，重點省略前提。", "suggestion": "改為「設特定化學設備的場所，搶救組織每年要做急救、避難訓練」。"},
+    {"node": "m14", "where": "圖", "type": "faithful", "severity": "warn", "reason": "「警報通知」步驟的依據 #1 限定丙類第一種或丁類合計一百公升以上，圖上當成所有漏洩的通用步驟。", "suggestion": "在警報步驟旁加註依據 #1 的適用條件，或拿掉這一步。"},
+    {"node": "m14", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「第一天就去找找洗眼器和沖淋設備」是依據沒有的作業建議。", "suggestion": "改為「重點第 4 點的設備，記得留意喔。」"},
+    {"node": "x02", "where": "goal", "type": "goal", "severity": "warn", "reason": "目標寫「清洗」，但重點只有排出溶劑、換氣、測定、輸氣管面罩，沒有清洗。", "suggestion": "改為「知道溶劑槽進槽前的排出、換氣和測定」。"},
+    {"node": "x03", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「等確認安全了再靠近」重述重點3的禁止事項。", "suggestion": "改為「好奇心要先放一邊，重點第 3 點要記住喔。」"},
+    {"node": "x07", "where": "quiz", "type": "faithful", "severity": "warn", "reason": "錯誤選項「氧氣瓶和氫氣瓶放在一起」需要知道氫氣是可燃性氣體，依據沒有寫。", "suggestion": "改為「可燃性氣體鋼瓶和氧氣鋼瓶放在一起」。"},
+    {"node": "x07", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「倒下來很危險」是依據以外的事實陳述。", "suggestion": "改為「鋼瓶的使用和貯存，重點第 1 點最基本喔。」"},
+    {"node": "x08", "where": "senpai", "type": "senpai", "severity": "warn", "reason": "「看到不安全的做法，記得向主管反映」是依據沒有的作業建議。", "suggestion": "改為「承攬商也是一起工作的夥伴，重點第 2 點要記住喔。」"}
+  ]
+}

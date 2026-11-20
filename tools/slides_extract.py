@@ -36,12 +36,13 @@ for name in pages:
         out['missing_pages'].append(name); continue
     text = p.read_text(encoding='utf-8')
     body = text.split('\n---\n', 1)[1] if text.startswith('---') else text
-    facts, caveats = [], []
-    section, sec_cites, block = '', [], None
+    facts, caveats, uncited = [], [], []
+    section, sec_cites, block, intro_cites = '', [], None, []
     for line in body.splitlines():
         if line.startswith('#'):
             section = clean(re.sub(r'^#+\s*', '', CITE.sub('', line)))
             sec_cites = cites_of(line)
+            intro_cites = []
             block = None
             if line.startswith('## 涉及法規') or line.startswith('## 相關情境'):
                 section = '__skip__'
@@ -65,11 +66,22 @@ for name in pages:
             continue
         c = cites_of(line)
         inherited = False
+        is_item = line.lstrip().startswith(('-', '|')) or re.match(r'^\s*\d+\.', line)
         if not c:
-            if sec_cites and (line.lstrip().startswith(('-', '|')) or re.match(r'^\s*\d+\.', line)):
-                c, inherited = sec_cites, True
+            # 條列項目沒有條號時：先繼承前面以「：」結尾的引言句，再繼承小標題
+            src = intro_cites if is_item and intro_cites else sec_cites
+            if src:
+                c, inherited = src, True
             else:
+                t0 = clean(line)
+                if t0 and not line.startswith('|'):
+                    uncited.append({'section': section, 'text': t0})
                 continue
+        ends_colon = CITE.sub('', line).rstrip().endswith(('：', ':'))
+        if ends_colon:
+            intro_cites = c
+        elif not is_item or not line.startswith((' ', '	')):
+            intro_cites = [] if not is_item else intro_cites
         t = clean(CITE.sub('', line))
         t = re.sub(r'[（(]\s*[)）]', '', t)
         t = re.sub(r'\s+([）)，。、；：])', r'\1', t).strip(' 、，。；')
@@ -79,7 +91,7 @@ for name in pages:
                       'cites': [{'law': x['law'], 'no': x['no']} for x in c], 'inherited': inherited})
     out['pages'][name] = {'path': f'wiki/情境/{name}.md',
                           'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
-                          'facts': facts, 'caveats': caveats}
+                          'facts': facts, 'caveats': caveats, 'uncited': uncited}
 
 idx = (root / 'wiki/index.md').read_text(encoding='utf-8')
 m = re.search(r'^> (本 Wiki .+)$', idx, re.M)

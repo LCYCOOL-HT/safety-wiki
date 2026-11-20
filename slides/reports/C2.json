@@ -1,0 +1,28 @@
+{
+ "check": "C2",
+ "attempt": 3,
+ "rejections": 3,
+ "max_rejections": 3,
+ "program": {
+  "pass": true,
+  "errors": [],
+  "removed_nodes": []
+ },
+ "counts": {
+  "main": 15,
+  "ext": 10
+ },
+ "review": {
+  "round1": {
+   "errors": 3,
+   "warns": 30
+  },
+  "round2": {
+   "previous_resolved": 33,
+   "errors": 4,
+   "warns": 20
+  }
+ },
+ "status": "BRAKE：第 3 次不通過，停止自動修改，交給使用者在 G1 決定",
+ "pass": false
+}
