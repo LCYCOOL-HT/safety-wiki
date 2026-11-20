@@ -1,11 +1,13 @@
 {
  "check": "C2",
- "attempt": 1,
+ "attempt": 3,
  "history": [
+  "pass",
+  "fail",
   "pass"
  ],
- "rejections": 0,
- "review_rejections": 0,
+ "rejections": 2,
+ "review_rejections": 1,
  "max_rejections": 3,
  "program": {
   "pass": true,
